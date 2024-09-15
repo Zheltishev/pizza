@@ -17,4 +17,5 @@ app.get('/', (req, res) => {
 
 app.post('/create-new-user', controller.createNewUser)
 app.post('/check-email', controller.checkEmail)
-app.get('/pizza', controller.pizza)
+app.post('/login-user', controller.login)
+app.get('/pizza-list', controller.pizzaList)

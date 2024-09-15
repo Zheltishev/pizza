@@ -1,7 +1,7 @@
 import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
 import { Avatar, Dialog } from '@mui/material';
 import Stack from '@mui/material/Stack';
-import { orange } from '@mui/material/colors';
+import { amber } from '@mui/material/colors';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useState } from 'react';
@@ -11,7 +11,7 @@ export default function Header() {
     const { userAuthorize, userName } = useSelector((state: RootState) => state.rootReducer.userDataSlice)
     const [authFormOpen, setAuthFormOpen] = useState(false)
   
-    const closeAuthFrom = (value: boolean) => {        
+    const closeAuthFrom = (value: boolean) => {
         setAuthFormOpen(value);
     };
 
@@ -26,11 +26,11 @@ export default function Header() {
             }}
         >
             <Stack>
-                <LocalPizzaIcon sx={{ color: orange[500], fontSize: 50, rotate: '35deg' }} />
+                <LocalPizzaIcon sx={{ color: amber[600], fontSize: 50, rotate: '35deg' }} />
             </Stack>
 
             <Stack onClick={() => setAuthFormOpen(true)}>
-                <Avatar sx={{ bgcolor: orange[500], cursor: 'pointer' }}>
+                <Avatar sx={{ bgcolor: amber[600], cursor: 'pointer' }}>
                     {userAuthorize ? userName.charAt(0) : '?'}
                 </Avatar>
             </Stack>

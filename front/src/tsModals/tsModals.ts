@@ -13,12 +13,12 @@ export interface IPizza {
     pizza_rating: number,
 }
 
-// export interface ICheckingLoginPasswordResult {
-//     status: boolean,
-//     inputFiled: string,
-//     message: string,
-// }
-
 export interface IAuthFromProps {
     closeAuthFrom: (value: boolean) => void
+}
+
+export interface IAuthFormData {
+    status: number,
+    message: string,
+    inputField: string,
 }

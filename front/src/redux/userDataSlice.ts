@@ -14,9 +14,10 @@ const userDataSlice = createSlice({
     name: 'userDataSlice',
     initialState,
     reducers: {
-        changeUserAuthorize: (state, action) => void(state.userAuthorize = action.payload)
+        changeUserAuthorize: (state, action) => void (state.userAuthorize = action.payload),
+        changeUserName: (state, action) => void (state.userName = action.payload)
     }
 })
 
-export const { changeUserAuthorize } = userDataSlice.actions
+export const { changeUserAuthorize, changeUserName } = userDataSlice.actions
 export default userDataSlice.reducer

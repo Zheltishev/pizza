@@ -1,7 +1,10 @@
 import { Button, DialogTitle, Stack, TextField } from "@mui/material";
 import { useState } from "react";
 import signUpNewUser from "../../middleware/signUpNewUser";
-import { IAuthFromProps } from "../../tsModals/tsModals";
+import { IAuthFromProps, IAuthFormData } from "../../tsModals/tsModals";
+import loginUser from "../../middleware/loginUser";
+import { useDispatch } from "react-redux";
+import { changeUserAuthorize, changeUserName } from "../../redux/userDataSlice";
 
 export default function AuthForm( props: IAuthFromProps ) {
     const [titleText, setTitleText] = useState('Do you have an account?')
@@ -16,21 +19,48 @@ export default function AuthForm( props: IAuthFromProps ) {
     const [passwordIsError, setPasswordIsError] = useState(false)
     const [passwordErrorText, setPasswordErrorText] = useState('')
     const { closeAuthFrom } = props
+    const dispatch = useDispatch()
+
+    const errorLoginPasswordHandler = (errorProps: IAuthFormData) => {
+        const { inputField, message } = errorProps
+
+        if (inputField === 'login') {
+            setLoginIsError(() => true)
+            setLoginErrorText(() => message)
+        } else {
+            setPasswordIsError(() => true)
+            setPasswordErrorText(() => message)
+        }
+    }
 
     async function signUp() {        
         const signUpResult = await signUpNewUser(loginText, passwordText)
 
         if (signUpResult.status === 200) {
-            alert(signUpResult.message)
+            signIn(loginText, passwordText)
             closeAuthFrom(false)
         } else {
-            if (signUpResult.inputField === 'login') {
-                setLoginIsError(() => true)
-                setLoginErrorText(() => signUpResult.message)
-            } else {
-                setPasswordIsError(() => true)
-                setPasswordErrorText(() => signUpResult.message)
+            errorLoginPasswordHandler(signUpResult)
+        }
+    }
+
+    async function signIn(login: string, password: string) {
+        const signInResponse = await loginUser(login, password)
+
+        if (signInResponse.status === 200) {
+            document.cookie = `token=${signInResponse.token}`
+            dispatch(changeUserAuthorize(true))
+            dispatch(changeUserName(loginText))
+            console.log(`token in cookie: ${document.cookie}`)
+            closeAuthFrom(false)
+        } else {
+            const error = {
+                status: 400,
+                message: signInResponse.message,
+                inputField: signInResponse.inputField
             }
+            
+            errorLoginPasswordHandler(error)
         }
     }
 
@@ -108,7 +138,11 @@ export default function AuthForm( props: IAuthFromProps ) {
                     <Button 
                     variant="outlined" 
                     onClick={() => {
-                        
+                        signIn(loginText, passwordText)
+                        setLoginIsError(() => false)
+                        setLoginErrorText(() => '')        
+                        setPasswordIsError(() => false)
+                        setPasswordErrorText(() => '')
                     }}
                     >
                         sign in
