@@ -21,8 +21,8 @@ export default async function loginUser(login: string, password: string) {
             return {
                 status: res.status,
                 inputField: 'none',
-                token: res.token,
-                message: res.message
+                message: res.message,
+                token: res.token
             }
         })
     
@@ -32,15 +32,15 @@ export default async function loginUser(login: string, password: string) {
         return {
             status: 400,
             inputField: resultCheckLoginPasswordProps.inputField,
-            token: '',
-            message: resultCheckLoginPasswordProps.message
+            message: resultCheckLoginPasswordProps.message,
+            token: ''
         }
     } else {
         return {
             status: 400,
             inputField: 'login',
-            token: '',
-            message: 'login not exist in DB'
+            message: 'login not exist in DB',
+            token: ''
         }
     }
 }

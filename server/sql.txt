@@ -62,7 +62,6 @@ CREATE TABLE users (
 
 CREATE TABLE tokens (
     token_owner INTEGER REFERENCES users (user_id),
-    token_devices_UUID string,
-    token_access string,
-    token_refresh string
+    token_access text NOT NULL,
+    token_refresh text NOT NULL
 )

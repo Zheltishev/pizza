@@ -1,7 +1,6 @@
 const { Pool } = require('pg')
 const { encodeData, decodePassword } = require('./bcryptData')
-const { createToken } = require('./jwtToken')
-
+const { createToken, writeTokenInDB, decodedToken } = require('./jwtToken')
 const pool = new Pool({
     user: process.env.DATABASE_USER,
     host: process.env.DATABASE_HOST,
@@ -18,12 +17,11 @@ const createNewUser = async (req, res) => {
       const currentTime = new Date().toJSON()
       const query = `INSERT INTO users (user_id, user_name, user_password, user_email, user_created) VALUES (DEFAULT, '${capitalizedName}', $2, $1, '${currentTime}')`
       const values = [login, encodeData(password) ]
-      const result = await pool.query(query, values)
+      await pool.query(query, values)
       
       res.status(200).json({ status: 200, message: 'new user created in DB' })
       
     } catch (err) {
-      console.error(`create-new-user error: ${err.detail}`);
       console.error(err)
       
       res.status(500).json({ message: err.detail })
@@ -54,14 +52,64 @@ const login = async (req, res) => {
     
     if (decodeResponse) {
       const accessToken = createToken(userId, '24h')
+      const refreshToken = createToken(userId, '512h')
+      let date = new Date(Date.now() + 86400e3)
+      date = date.toUTCString()
 
-      return res.status(200).json({ status: 200, message: 'password correct', token: accessToken })
+      await writeTokenInDB(userId, accessToken, refreshToken)
+
+      res
+        .status(200)
+        .send({
+          status: 200, 
+          message: 'password correct', 
+          token: `accessToken=${accessToken}; refreshToken=${refreshToken}; expires=${date}`
+        })
+
+      return
     } else {
-      return res.status(500).json({ status: 500, message: 'password error', token: '' })
+      return res.status(500).json({ 
+        status: 500, 
+        message: 'password error',
+        token: ''
+      })
     }
 
   } catch (error) {
-    res.json({ status: 500, message: 'server error login function', token: '' })
+    res.json({ status: 500, message: 'server error: login function', token: '' })
+  }
+}
+
+const checkAccessToken = async (req, res) => {
+  try {
+    let accessToken = req.headers.authorization
+
+    if (accessToken) {
+      const queryToken = `SELECT EXISTS (SELECT 1 FROM tokens WHERE token_access = $1)`
+      const tokenValues = [ accessToken.replace('Bearer ', '') ]
+      const tokenResult = await pool.query(queryToken, tokenValues)
+
+      if (!tokenResult.rows[0].exists) {
+        return res.status(400).json({ status: 400, message: 'token comparison error' })
+      } else {
+        const { userId, expTime } = decodedToken(accessToken.replace('Bearer ', ''))
+        const queryUser = `SELECT user_name FROM users WHERE user_id = $1`
+        const idValue = [ userId ]
+        const userData = await pool.query(queryUser, idValue)
+
+        if (userData || Date.now() <= expTime * 1000) {
+          return res.status(200).json({ status: 200, message: userData.rows[0].user_name })
+        } else {
+          return res.status(400).json({ status: 400, message: 'error info from token' })
+        }
+      }
+    } else {
+      return res.status(400).json({ status: 400, message: 'headers token error' })
+    }
+  } catch (error) {
+    console.error(error.detail)
+
+    return res.status(400).json({ status: 400, message: 'token error' })
   }
 }
 
@@ -83,5 +131,6 @@ module.exports = {
     createNewUser,
     checkEmail,
     login,
+    checkAccessToken,
     pizzaList
 }

@@ -2,18 +2,36 @@ import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
 import { Avatar, Dialog } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { amber } from '@mui/material/colors';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useState } from 'react';
 import AuthForm from '../modals/AuthForm';
+import checkToken from '../../middleware/checkToken';
+import { changeUserAuthorize, changeUserName } from '../../redux/userDataSlice';
 
 export default function Header() {
+    const dispatch = useDispatch()
     const { userAuthorize, userName } = useSelector((state: RootState) => state.rootReducer.userDataSlice)
     const [authFormOpen, setAuthFormOpen] = useState(false)
   
     const closeAuthFrom = (value: boolean) => {
         setAuthFormOpen(value);
     };
+
+    async function checkAuth() {
+        const resultCheckingToken = await checkToken()
+
+        if (resultCheckingToken.status === 200) {
+            dispatch(changeUserAuthorize(true))
+            dispatch(changeUserName(resultCheckingToken.message))
+        } else {
+            dispatch(changeUserAuthorize(false))
+
+            console.warn(resultCheckingToken.message)
+        }
+    }
+
+    checkAuth()
 
     return (
         <Stack 
@@ -31,7 +49,7 @@ export default function Header() {
 
             <Stack onClick={() => setAuthFormOpen(true)}>
                 <Avatar sx={{ bgcolor: amber[600], cursor: 'pointer' }}>
-                    {userAuthorize ? userName.charAt(0) : '?'}
+                    {userAuthorize ? userName.charAt(0).toUpperCase() : '?'}
                 </Avatar>
             </Stack>
 

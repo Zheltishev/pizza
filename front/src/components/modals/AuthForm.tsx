@@ -48,10 +48,12 @@ export default function AuthForm( props: IAuthFromProps ) {
         const signInResponse = await loginUser(login, password)
 
         if (signInResponse.status === 200) {
-            document.cookie = `token=${signInResponse.token}`
+            signInResponse.token.split(';').forEach((e: string) => {
+                document.cookie = e
+            })
+            
             dispatch(changeUserAuthorize(true))
             dispatch(changeUserName(loginText))
-            console.log(`token in cookie: ${document.cookie}`)
             closeAuthFrom(false)
         } else {
             const error = {
