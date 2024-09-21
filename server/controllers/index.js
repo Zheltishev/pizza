@@ -1,6 +1,6 @@
 const { Pool } = require('pg')
 const { encodeData, decodePassword } = require('./bcryptData')
-const { createToken, writeTokenInDB, decodedToken } = require('./jwtToken')
+const { createToken, writeTokenInDB, decodedToken, tokenExistInDB, tokenInfo } = require('./jwtToken')
 const pool = new Pool({
     user: process.env.DATABASE_USER,
     host: process.env.DATABASE_HOST,
@@ -51,8 +51,8 @@ const login = async (req, res) => {
     const decodeResponse = decodePassword(password, hashPassword.rows[0].user_password)
     
     if (decodeResponse) {
-      const accessToken = createToken(userId, '24h')
-      const refreshToken = createToken(userId, '512h')
+      const accessToken = createToken(userId, 3600)
+      const refreshToken = createToken(userId, 7200)
       let date = new Date(Date.now() + 86400e3)
       date = date.toUTCString()
 
@@ -63,7 +63,7 @@ const login = async (req, res) => {
         .send({
           status: 200, 
           message: 'password correct', 
-          token: `accessToken=${accessToken}; refreshToken=${refreshToken}; expires=${date}`
+          token: `token_access=${accessToken}; token_refresh=${refreshToken}; expires=${date}`
         })
 
       return
@@ -80,36 +80,50 @@ const login = async (req, res) => {
   }
 }
 
-const checkAccessToken = async (req, res) => {
+const checkToken = async (req, res) => {
   try {
-    let accessToken = req.headers.authorization
+    let token = req.headers.authorization
+    const { tokenType } = req.body
 
-    if (accessToken) {
-      const queryToken = `SELECT EXISTS (SELECT 1 FROM tokens WHERE token_access = $1)`
-      const tokenValues = [ accessToken.replace('Bearer ', '') ]
-      const tokenResult = await pool.query(queryToken, tokenValues)
+    if (token && await tokenExistInDB(token, tokenType) && tokenInfo(token).expTime) {
+      const queryUser = `SELECT user_name FROM users WHERE user_id = $1`
+      const idValue = [ tokenInfo(token).userId ]
+      const userData = await pool.query(queryUser, idValue)
 
-      if (!tokenResult.rows[0].exists) {
-        return res.status(400).json({ status: 400, message: 'token comparison error' })
-      } else {
-        const { userId, expTime } = decodedToken(accessToken.replace('Bearer ', ''))
-        const queryUser = `SELECT user_name FROM users WHERE user_id = $1`
-        const idValue = [ userId ]
-        const userData = await pool.query(queryUser, idValue)
-
-        if (userData || Date.now() <= expTime * 1000) {
-          return res.status(200).json({ status: 200, message: userData.rows[0].user_name })
-        } else {
-          return res.status(400).json({ status: 400, message: 'error info from token' })
-        }
-      }
+      return res.status(200).json({ 
+        status: 200, 
+        message: 'token valid',
+        userId: idValue[0],
+        userName: userData.rows[0].user_name 
+      })
     } else {
-      return res.status(400).json({ status: 400, message: 'headers token error' })
+
+      return res.status(401).json({ status: 401, message: 'token error' })
     }
   } catch (error) {
-    console.error(error.detail)
+    // console.error(error.detail)
 
-    return res.status(400).json({ status: 400, message: 'token error' })
+    return res.status(401).json({ status: 401, message: 'checkToken error' })
+  }
+}
+
+const updateToken = async (req, res) => {
+  try {
+    const { userId } = req.body
+    const accessToken = createToken(userId, 3600)
+    const refreshToken = createToken(userId, 7200)
+    let date = new Date(Date.now() + 86400e3)
+    date = date.toUTCString()
+
+    await writeTokenInDB(userId, accessToken, refreshToken)
+
+    return res
+      .status(200)
+      .send({
+        token: `token_access=${accessToken}; token_refresh=${refreshToken}; expires=${date}`
+      })
+  } catch (error) {
+    return res.status(400).json({ status: 400, message: 'error update token' })
   }
 }
 
@@ -131,6 +145,7 @@ module.exports = {
     createNewUser,
     checkEmail,
     login,
-    checkAccessToken,
+    checkToken,
+    updateToken,
     pizzaList
 }

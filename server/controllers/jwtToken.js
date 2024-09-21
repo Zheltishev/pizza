@@ -8,7 +8,7 @@ const pool = new Pool({
     port: process.env.DATABASE_PORT
   })
 
-const createToken = (userId, time = '1h') => {
+const createToken = (userId, time = 10) => {
     return jwt.sign({ userId: userId }, process.env.SECRET_KEY, {expiresIn: time})
 }
 
@@ -28,8 +28,27 @@ const decodedToken = (token) => {
     }
 }
 
+const tokenExistInDB = async (token, tokenType) => {
+  const queryToken = `SELECT EXISTS (SELECT 1 FROM tokens WHERE ${tokenType} = $1)`
+  const tokenValues = [ token.replace('Bearer ', '') ]
+  const tokenResult = await pool.query(queryToken, tokenValues)
+
+  return tokenResult.rows[0].exists
+}
+  
+const tokenInfo = (token) => {
+  const { userId, expTime } = decodedToken(token.replace('Bearer ', ''))
+
+  return {
+    expTime: Date.now() < expTime * 1000,
+    userId: userId
+  }
+}
+
 module.exports = {
     createToken,
     writeTokenInDB,
-    decodedToken
+    decodedToken,
+    tokenExistInDB,
+    tokenInfo
 }

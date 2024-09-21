@@ -22,3 +22,8 @@ export interface IAuthFormData {
     message: string,
     inputField: string,
 }
+
+export enum ETokenType {
+    token_access = 'token_access',
+    token_refresh = 'token_refresh'
+}

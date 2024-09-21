@@ -21,13 +21,11 @@ export default function Header() {
     async function checkAuth() {
         const resultCheckingToken = await checkToken()
 
-        if (resultCheckingToken.status === 200) {
+        if (resultCheckingToken!.status === 200) {
             dispatch(changeUserAuthorize(true))
-            dispatch(changeUserName(resultCheckingToken.message))
+            dispatch(changeUserName(resultCheckingToken!.userName))
         } else {
             dispatch(changeUserAuthorize(false))
-
-            console.warn(resultCheckingToken.message)
         }
     }
 

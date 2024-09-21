@@ -1,27 +1,41 @@
 import Cookies from "js-cookie"
+import { ETokenType } from "../tsModals/tsModals"
+import verificationToken from "./verificationToken"
+import updateToken from "./updateToken"
 
 export default async function checkToken() {
-    if (Cookies.get('accessToken')) {
-        const checkAccessToken = await fetch('http://localhost:8000/check-access-token', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${Cookies.get('accessToken')}`
-            }
-        })
-        .then(res => res.json())
-        .then(res => res)
-        
-         if (checkAccessToken.status === 400) {
-            // check refresh token
+    const verificationAccessToken = await verificationToken(ETokenType.token_access)
+    const verificationRefreshToken = await verificationToken(ETokenType.token_refresh)
 
-            return checkAccessToken
-         } else {
-            return checkAccessToken
-         }
+    if (Cookies.get('token_access') && verificationAccessToken.status === 200) {
+
+        return {
+            status: 200,
+            message: verificationAccessToken.message,
+            userName: verificationAccessToken.userName
+        }
+    } else if (Cookies.get('token_refresh') && verificationRefreshToken.status === 200 ) {
+        const newToken = await updateToken(verificationRefreshToken.userId)
+
+        console.log('update access and refresh token')
+        if (newToken) {
+            newToken.split(';').forEach((e: string) => {
+                document.cookie = e
+            })
+
+            const verificationUpdatedAccessToken = await verificationToken(ETokenType.token_access)
+
+            return {
+                status: 200,
+                message: verificationUpdatedAccessToken.message,
+                userName: verificationUpdatedAccessToken.userName
+            }
+        } 
     } else {
         return {
-            status: 400,
-            message: 'cookie token is missing'
+            status: 401,
+            message: 'token in cookie is missing',
+            userName: ''
         }
     }
 }
