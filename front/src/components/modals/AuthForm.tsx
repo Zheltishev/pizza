@@ -1,10 +1,11 @@
-import { Button, DialogTitle, Stack, TextField } from "@mui/material";
+import { Button, DialogTitle, FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack, TextField } from "@mui/material";
 import { useState } from "react";
 import signUpNewUser from "../../middleware/signUpNewUser";
 import { IAuthFromProps, IAuthFormData } from "../../tsModals/tsModals";
 import loginUser from "../../middleware/loginUser";
 import { useDispatch } from "react-redux";
 import { changeUserAuthorize, changeUserName } from "../../redux/userDataSlice";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 export default function AuthForm( props: IAuthFromProps ) {
     const [titleText, setTitleText] = useState('Do you have an account?')
@@ -18,6 +19,7 @@ export default function AuthForm( props: IAuthFromProps ) {
     const [loginErrorText, setLoginErrorText] = useState('')
     const [passwordIsError, setPasswordIsError] = useState(false)
     const [passwordErrorText, setPasswordErrorText] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
     const { closeAuthFrom } = props
     const dispatch = useDispatch()
 
@@ -67,7 +69,7 @@ export default function AuthForm( props: IAuthFromProps ) {
     }
 
     return (
-        <Stack sx={{padding: '1rem 3rem', minWidth: 400}}>
+        <Stack sx={{padding: '1rem 2rem', minWidth: 420}}>
             <DialogTitle sx={{ textAlign: 'center', paddingBlock: 0 }}> {titleText} </DialogTitle>
 
             {
@@ -114,21 +116,44 @@ export default function AuthForm( props: IAuthFromProps ) {
                         label="email" 
                         variant="outlined" 
                         autoComplete="off" 
-                        size="small"
                         error={loginIsError}
                         helperText={loginErrorText}
                         onChange={(e) => setLoginText(e.currentTarget.value)}
                     />
                     
-                    <TextField 
-                        label="password" 
-                        variant="outlined" 
-                        autoComplete="off" 
-                        size="small"
-                        error={passwordIsError}
-                        helperText={passwordErrorText}
-                        onChange={(e) => setPasswordText(e.currentTarget.value)}
-                    />
+                    <Stack>
+                        <FormControl variant="outlined">
+                            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                            <OutlinedInput
+                                id="outlined-adornment-password"
+                                type={showPassword ? 'text' : 'password'}
+                                error={!!passwordIsError}
+                                autoComplete="off"
+                                onChange={(e) => setPasswordText(e.currentTarget.value)}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                        aria-label="toggle password visibility"
+                                        edge="end"
+                                        onClick={(e) => {
+                                            setShowPassword((show) => !show)
+                                        }}
+                                        >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                                label="Password"
+                            />
+                            <FormHelperText 
+                                error = { passwordIsError }
+                                id = "outlined-weight-helper-text"
+                            >
+                                { passwordErrorText }
+                            </FormHelperText>
+                        </FormControl>
+                    </Stack>
+
                 </Stack>
             }
 
@@ -139,6 +164,7 @@ export default function AuthForm( props: IAuthFromProps ) {
                     showButtonSignIn &&
                     <Button 
                     variant="outlined" 
+                    size="large"
                     onClick={() => {
                         signIn(loginText, passwordText)
                         setLoginIsError(() => false)
@@ -155,6 +181,7 @@ export default function AuthForm( props: IAuthFromProps ) {
                     showButtonSignUp &&
                     <Button 
                     variant="outlined" 
+                    size="large"
                     onClick={() => {
                         signUp()
                         setLoginIsError(() => false)

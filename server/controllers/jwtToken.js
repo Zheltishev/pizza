@@ -8,7 +8,7 @@ const pool = new Pool({
     port: process.env.DATABASE_PORT
   })
 
-const createToken = (userId, time = 10) => {
+const createToken = (userId, time = 3600) => {
     return jwt.sign({ userId: userId }, process.env.SECRET_KEY, {expiresIn: time})
 }
 
