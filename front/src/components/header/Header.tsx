@@ -1,10 +1,11 @@
 import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
+import LoginIcon from '@mui/icons-material/Login';
 import { Avatar, Box, Dialog, IconButton, ListItemIcon, Menu, MenuItem, Tooltip } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { amber } from '@mui/material/colors';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AuthForm from '../modals/AuthForm';
 import checkToken from '../../middleware/checkToken';
 import { changeUserAuthorize, changeUserName } from '../../redux/userDataSlice';
@@ -27,18 +28,20 @@ export default function Header() {
         setAuthFormOpen(value);
     };
 
-    async function checkAuth() {
-        const resultCheckingToken = await checkToken()
-
-        if (resultCheckingToken!.status === 200) {
-            dispatch(changeUserAuthorize(true))
-            dispatch(changeUserName(resultCheckingToken!.userName))
-        } else {
-            dispatch(changeUserAuthorize(false))
+    useEffect(() => {
+        async function checkAuth() {
+            const resultCheckingToken = await checkToken()
+    
+            if (resultCheckingToken!.status === 200) {
+                dispatch(changeUserAuthorize(true))
+                dispatch(changeUserName(resultCheckingToken!.userName))
+            } else {
+                dispatch(changeUserAuthorize(false))
+            }
         }
-    }
-
-    checkAuth()
+    
+        checkAuth()
+    }, [dispatch])
 
     return (
         <Stack 
@@ -54,20 +57,7 @@ export default function Header() {
                 <LocalPizzaIcon sx={{ color: amber[600], fontSize: 50, rotate: '35deg' }} />
             </Stack>
 
-            {/* <Stack onClick={() => userAuthorize ? console.log('user authorized') : setAuthFormOpen(true)}>
-                <Avatar sx={{ bgcolor: amber[600], cursor: 'pointer' }}>
-                    {userAuthorize ? userName.charAt(0).toUpperCase() : '?'}
-                </Avatar>
-            </Stack> */}
-
-            <Box 
-                sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}
-                onClick={() => {
-                    if (!userAuthorize) {
-                        setAuthFormOpen(true)
-                    }
-                }}
-            >
+            <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }} >
                 <Tooltip title="Account">
                 <IconButton
                     onClick={openAccountMenu}
@@ -92,18 +82,30 @@ export default function Header() {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                
-                <MenuItem onClick={() => {
-                    document.cookie = "token_access=''; expires=0";
-                    document.cookie = "token_refresh=''; expires=0";
-                    
-                    closeAccountMenu()
-                }}>
-                    <ListItemIcon>
-                        <Logout fontSize="small" />
-                    </ListItemIcon>
-                    Logout
-                </MenuItem>
+                {userAuthorize 
+                    ?
+                    <MenuItem onClick={() => {
+                        document.cookie = "token_access=''; expires=0";
+                        document.cookie = "token_refresh=''; expires=0";
+                        dispatch(changeUserAuthorize(false))
+                        closeAccountMenu()
+                    }}>
+                        <ListItemIcon>
+                            <Logout fontSize="small" />
+                        </ListItemIcon>
+                        Logout
+                    </MenuItem>
+                    :
+                    <MenuItem onClick={() => {
+                        setAuthFormOpen(true)                        
+                        closeAccountMenu()
+                    }}>
+                        <ListItemIcon>
+                            <LoginIcon fontSize="small" />
+                        </ListItemIcon>
+                        Autorization
+                    </MenuItem>
+                }
             </Menu>
 
             <>

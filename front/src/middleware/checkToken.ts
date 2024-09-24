@@ -4,6 +4,15 @@ import verificationToken from "./verificationToken"
 import updateToken from "./updateToken"
 
 export default async function checkToken() {
+    if (!Cookies.get('token_access') && !Cookies.get('token_refresh')) {
+        
+        return {
+            status: 401,
+            message: 'there are not tokens in cookie',
+            userName: ''
+        }
+    }
+
     const verificationAccessToken = await verificationToken(ETokenType.token_access)
     const verificationRefreshToken = await verificationToken(ETokenType.token_refresh)
 
@@ -32,6 +41,7 @@ export default async function checkToken() {
             }
         } 
     } else {
+
         return {
             status: 401,
             message: 'token in cookie is missing',

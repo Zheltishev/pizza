@@ -3,12 +3,13 @@ const app = express()
 const cors = require('cors')
 const port = process.env.PORT || 8000
 const controller = require('./controllers/index')
+const { logger } = require('./utils/log')
 
 app.use(cors())
 app.use(express.json())
 
 app.listen(port, () => {
-  console.log(`Server has been started on port ${port}`)
+  logger.info(`Server has been started on port ${port}`)
 })
 
 app.get('/', (req, res) => {

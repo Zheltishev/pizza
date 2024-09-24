@@ -1,6 +1,7 @@
 const { Pool } = require('pg')
 const { encodeData, decodePassword } = require('./bcryptData')
 const { createToken, writeTokenInDB, decodedToken, tokenExistInDB, tokenInfo } = require('./jwtToken')
+const { logger, authLogger } = require('../utils/log')
 const pool = new Pool({
     user: process.env.DATABASE_USER,
     host: process.env.DATABASE_HOST,
@@ -19,12 +20,11 @@ const createNewUser = async (req, res) => {
       const values = [login, encodeData(password) ]
       await pool.query(query, values)
       
-      res.status(200).json({ status: 200, message: 'new user created in DB' })
+      return res.status(200).json({ status: 200, message: 'new user created in DB' })
+    } catch (error) {
+      logger.error(error)
       
-    } catch (err) {
-      console.error(err)
-      
-      res.status(500).json({ message: err.detail })
+      return res.status(400).json({ message: error.detail })
     }
   }
 
@@ -34,9 +34,11 @@ const checkEmail = async (req, res) => {
       const query = `SELECT * FROM users WHERE user_email = '${login}'`
       const result = await pool.query(query)
   
-      res.json({ message: result.rows[0].user_email})
-    } catch (err) {
-      res.json({ message: err.detail })
+      return res.json({ message: result.rows[0].user_email})
+    } catch (error) {
+      logger.error(`check email error: ${error}`)
+
+      return res.status(409).json({ message: error.detail })
     }
   }
 
@@ -58,25 +60,29 @@ const login = async (req, res) => {
 
       await writeTokenInDB(userId, accessToken, refreshToken)
 
-      res
+      authLogger.info(`user ${login} logged in`)
+
+      return res
         .status(200)
         .send({
           status: 200, 
           message: 'password correct', 
           token: `token_access=${accessToken}; token_refresh=${refreshToken}; expires=${date}`
         })
-
-      return
     } else {
-      return res.status(500).json({ 
-        status: 500, 
+      logger.error(`user: ${userId}, password error`)
+
+      return res.status(401).json({ 
+        status: 401, 
         message: 'password error',
         token: ''
       })
     }
 
   } catch (error) {
-    res.json({ status: 500, message: 'server error: login function', token: '' })
+    logger.error(error)
+
+    return res.json({ status: 401, message: 'server error: login function', token: '' })
   }
 }
 
@@ -92,16 +98,17 @@ const checkToken = async (req, res) => {
 
       return res.status(200).json({ 
         status: 200, 
-        message: 'token valid',
+        message: `${tokenType} valid`,
         userId: idValue[0],
         userName: userData.rows[0].user_name 
       })
     } else {
+      logger.error(`error ${tokenType}: is not valid`)
 
-      return res.status(401).json({ status: 401, message: 'token error' })
+      return res.status(401).json({ status: 401, message: `${tokenType} error` })
     }
   } catch (error) {
-    // console.error(error.detail)
+    logger.error(error)
 
     return res.status(401).json({ status: 401, message: 'checkToken error' })
   }
@@ -123,6 +130,8 @@ const updateToken = async (req, res) => {
         token: `token_access=${accessToken}; token_refresh=${refreshToken}; expires=${date}`
       })
   } catch (error) {
+    logger.error(`update token error: ${error}`)
+
     return res.status(400).json({ status: 400, message: 'error update token' })
   }
 }
@@ -133,10 +142,11 @@ const pizzaList = async (req, res) => {
       const result = await pool.query(queryString)
   
       res.json(result.rows)
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({
-        error: 'An error'
+    } catch (error) {
+      logger.error(error)
+
+      return res.status(500).json({
+        message: 'An error'
       })
     }
   }
