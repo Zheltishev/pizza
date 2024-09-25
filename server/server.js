@@ -7,6 +7,8 @@ const { logger } = require('./utils/log')
 
 app.use(cors())
 app.use(express.json())
+app.use('/images', express.static(__dirname + '/images'))
+console.log(__dirname)
 
 app.listen(port, () => {
   logger.info(`Server has been started on port ${port}`)

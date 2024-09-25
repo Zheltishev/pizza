@@ -103,7 +103,7 @@ const checkToken = async (req, res) => {
         userName: userData.rows[0].user_name 
       })
     } else {
-      logger.error(`error ${tokenType}: is not valid`)
+      // logger.error(`error ${tokenType}: is not valid`)
 
       return res.status(401).json({ status: 401, message: `${tokenType} error` })
     }
@@ -141,7 +141,7 @@ const pizzaList = async (req, res) => {
       const queryString = 'SELECT * FROM pizza'
       const result = await pool.query(queryString)
   
-      res.json(result.rows)
+      res.status(200).json(result.rows)
     } catch (error) {
       logger.error(error)
 
