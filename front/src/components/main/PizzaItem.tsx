@@ -1,8 +1,9 @@
-import { Avatar, Button, Card, CardActions, CardHeader, CardMedia, Typography } from "@mui/material"
+import { Avatar, Box, Button, Card, CardActions, CardHeader, CardMedia, Typography } from "@mui/material"
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import DonutLargeIcon from '@mui/icons-material/DonutLarge';
 import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
 import GrassIcon from '@mui/icons-material/Grass';
+import StarRateIcon from '@mui/icons-material/StarRate';
 import { IPizza } from "../../tsModals/tsModals"
 import { AddShoppingCart } from "@mui/icons-material"
 import { amber, grey } from "@mui/material/colors"
@@ -10,6 +11,7 @@ import { amber, grey } from "@mui/material/colors"
 export default function PizzaItem({...pizza }: IPizza) {
     const {
         pizza_name,
+        pizza_rating,
         pizza_price,
         pizza_ingredients,
         pizza_image_name,
@@ -35,6 +37,7 @@ export default function PizzaItem({...pizza }: IPizza) {
             <CardHeader 
                 title={ pizza_name }
                 subheader={ price }
+                sx={{ padding: '1rem 0' }}
                 avatar={
                     <Avatar sx={{ bgcolor: amber[600] }} aria-label="recipe">
                         { pizza_hot 
@@ -43,6 +46,18 @@ export default function PizzaItem({...pizza }: IPizza) {
                             ? <GrassIcon /> : <LocalPizzaIcon /> }
                     </Avatar>
                   }
+                action={
+                  <Box
+                    sx={{
+                        display: 'flex',
+                        gap: '0.5rem',
+                        paddingRight: 0.5
+                    }}
+                  >
+                    <StarRateIcon color="primary" />
+                    <Typography sx={{ paddingTop: '2px' }}>{pizza_rating}</Typography>
+                  </Box>
+                }
             />
             <CardMedia
                 component="img"

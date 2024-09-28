@@ -27,3 +27,9 @@ export enum ETokenType {
     token_access = 'token_access',
     token_refresh = 'token_refresh'
 }
+
+export enum ESortValues {
+    pizzaPriceASC = 'pizza_price ASC',
+    pizzaPriceDESC = 'pizza_price DESC',
+    pizzaRatingDESC = 'pizza_rating DESC',
+}

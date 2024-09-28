@@ -67,7 +67,13 @@ export default function Header() {
                     aria-haspopup="true"
                     aria-expanded={accountMenuState ? 'true' : undefined}
                 >
-                    <Avatar sx={{ width: 32, height: 32 }}>
+                    <Avatar 
+                        sx={{ 
+                            width: 32, 
+                            height: 32,
+                            backgroundColor: userAuthorize ? '#ffa000' : '#616161'
+                        }}
+                    >
                         {userAuthorize ? userName.charAt(0).toUpperCase() : '?'}
                     </Avatar>
                 </IconButton>

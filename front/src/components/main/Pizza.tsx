@@ -23,7 +23,9 @@ export default function Pizza() {
             columns={{ xs: 4, md: 12 }}
             sx={{ 
                 padding: '1rem',
-                maxWidth: '1600px'
+                width: {
+                    lg: '1600px'
+                }
             }}
         >
             {

@@ -10,7 +10,7 @@ const pool = new Pool({
 
 const pizzaList = async (req, res) => {
   try {
-    const queryString = 'SELECT * FROM pizza'
+    const queryString = 'SELECT * FROM pizza ORDER BY pizza_price'
     const result = await pool.query(queryString)
 
     res.status(200).json(result.rows)
@@ -25,8 +25,8 @@ const pizzaList = async (req, res) => {
 
 const filteredPizzaList = async (req, res) => {
   try {
-    const { minValue, maxValue } = req.body 
-    let filterQuery = `SELECT * FROM pizza WHERE pizza_price >= $1 AND pizza_price <= $2`
+    const { minValue, maxValue, sortValue } = req.body 
+    let filterQuery = `SELECT * FROM pizza WHERE pizza_price >= $1 AND pizza_price <= $2 ORDER BY ${sortValue}`
     const values = [minValue, maxValue]
     const filteredResult = await pool.query(filterQuery, values)
 
