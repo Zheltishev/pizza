@@ -54,11 +54,11 @@ export default function Header() {
             }}
         >
             <Stack>
-                <LocalPizzaIcon sx={{ color: amber[600], fontSize: 50, rotate: '35deg' }} />
+                <LocalPizzaIcon sx={{ color: amber[700], fontSize: 50, rotate: '35deg' }} />
             </Stack>
 
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }} >
-                <Tooltip title="Account">
+                <Tooltip title="Личный кабинет">
                 <IconButton
                     onClick={openAccountMenu}
                     size="small"
@@ -93,7 +93,7 @@ export default function Header() {
                         <ListItemIcon>
                             <Logout fontSize="small" />
                         </ListItemIcon>
-                        Logout
+                        Выйти
                     </MenuItem>
                     :
                     <MenuItem onClick={() => {
@@ -103,7 +103,7 @@ export default function Header() {
                         <ListItemIcon>
                             <LoginIcon fontSize="small" />
                         </ListItemIcon>
-                        Autorization
+                        Авторизоваться
                     </MenuItem>
                 }
             </Menu>

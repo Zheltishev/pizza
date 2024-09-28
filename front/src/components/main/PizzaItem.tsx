@@ -1,14 +1,21 @@
-import { Button, Card, CardActions, CardHeader, CardMedia, Typography } from "@mui/material"
+import { Avatar, Button, Card, CardActions, CardHeader, CardMedia, Typography } from "@mui/material"
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import DonutLargeIcon from '@mui/icons-material/DonutLarge';
+import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
+import GrassIcon from '@mui/icons-material/Grass';
 import { IPizza } from "../../tsModals/tsModals"
 import { AddShoppingCart } from "@mui/icons-material"
-import { grey } from "@mui/material/colors"
+import { amber, grey } from "@mui/material/colors"
 
 export default function PizzaItem({...pizza }: IPizza) {
     const {
         pizza_name,
         pizza_price,
         pizza_ingredients,
-        pizza_image_name
+        pizza_image_name,
+        pizza_hot,
+        pizza_vegetarian,
+        pizza_mix
     } = pizza
     const imgSRC = `http://localhost:8000/images/${pizza_image_name}.png`
     const price = `${pizza_price}₽`
@@ -28,6 +35,14 @@ export default function PizzaItem({...pizza }: IPizza) {
             <CardHeader 
                 title={ pizza_name }
                 subheader={ price }
+                avatar={
+                    <Avatar sx={{ bgcolor: amber[600] }} aria-label="recipe">
+                        { pizza_hot 
+                            ? <LocalFireDepartmentIcon /> : pizza_mix
+                            ? <DonutLargeIcon /> : pizza_vegetarian
+                            ? <GrassIcon /> : <LocalPizzaIcon /> }
+                    </Avatar>
+                  }
             />
             <CardMedia
                 component="img"
@@ -56,7 +71,7 @@ export default function PizzaItem({...pizza }: IPizza) {
                     startIcon={<AddShoppingCart />}
                     variant="outlined"
                 >
-                    add
+                    добавить
                 </Button>
             </CardActions>
         </Card>

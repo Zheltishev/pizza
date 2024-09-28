@@ -1,16 +1,20 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { IPizza } from "../../tsModals/tsModals"
 import PizzaItem from "./PizzaItem"
 import { Grid2 } from "@mui/material"
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from "../../redux/store"
+import { changePizzaList } from "../../redux/pizzaListSlice"
 
 export default function Pizza() {
-    const [ pizzaList, setPizzaList ] = useState([])
+    const dispatch = useDispatch()
+    const { pizzaList } = useSelector((state: RootState) => state.rootReducer.pizzaListSlice)
 
     useEffect(() => {
         fetch('http://localhost:8000/pizza-list')
             .then(res => res.json())
-            .then(res => setPizzaList(res))
-    }, [])
+            .then(res => dispatch(changePizzaList(res)))
+    }, [dispatch])
 
     return (
         <Grid2 

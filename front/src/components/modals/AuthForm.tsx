@@ -8,7 +8,7 @@ import { changeUserAuthorize, changeUserName } from "../../redux/userDataSlice";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 export default function AuthForm( props: IAuthFromProps ) {
-    const [titleText, setTitleText] = useState('Do you have an account?')
+    const [titleText, setTitleText] = useState('У вас есть аккаунт?')
     const [showChoiceButtons, setShowChoiceButtons] = useState(true)
     const [showInputs, setShowInputs] = useState(false)
     const [showButtonSignIn, setShowButtonSignIn] = useState(false)
@@ -82,25 +82,25 @@ export default function AuthForm( props: IAuthFromProps ) {
                     <Button 
                         variant="outlined" 
                         onClick={() => {
-                            setTitleText('Sign in to Pizza')
+                            setTitleText('Войти в личный кабинет')
                             setShowChoiceButtons(false)
                             setShowInputs(true)
                             setShowButtonSignIn(true)
                         }}
                     >
-                        sign in
+                        войти
                     </Button>
 
                     <Button 
                         variant="outlined" 
                         onClick={() => {
-                            setTitleText('Enter your email and password')
+                            setTitleText('введите ваши почту и пароль')
                             setShowChoiceButtons(false)
                             setShowInputs(true)
                             setShowButtonSignUp(true)
                         }}
                     >
-                        sign up
+                        зарегистрироваться
                     </Button>
                 </Stack>
             }
@@ -113,7 +113,7 @@ export default function AuthForm( props: IAuthFromProps ) {
                     sx={{ marginBlock: '1rem' }}
                 >
                     <TextField 
-                        label="email" 
+                        label="почта" 
                         variant="outlined" 
                         autoComplete="off" 
                         error={loginIsError}
@@ -123,7 +123,7 @@ export default function AuthForm( props: IAuthFromProps ) {
                     
                     <Stack>
                         <FormControl variant="outlined">
-                            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-password">пароль</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-password"
                                 type={showPassword ? 'text' : 'password'}
@@ -173,7 +173,7 @@ export default function AuthForm( props: IAuthFromProps ) {
                         setPasswordErrorText(() => '')
                     }}
                     >
-                        sign in
+                        войти
                     </Button>
                 }
 
@@ -190,7 +190,7 @@ export default function AuthForm( props: IAuthFromProps ) {
                         setPasswordErrorText(() => '')
                     }}
                     >
-                        sign up
+                        зарегистрироваться
                     </Button>
                 }
             </Stack>

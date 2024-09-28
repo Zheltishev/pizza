@@ -15,7 +15,7 @@ export default async function checkLoginDB (login: string) {
         return {
             status: false,
             inputField: 'login',
-            message: 'login exist in DB'
+            message: 'почта занята'
         }
     } else {
         return {

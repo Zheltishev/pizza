@@ -1,3 +1,4 @@
+import FilterPizza from "./FilterPizza";
 import Pizza from "./Pizza";
 
 export default function Main() {
@@ -8,6 +9,7 @@ export default function Main() {
                 justifyContent: 'center'
             }}
         >
+            <FilterPizza />
             <Pizza />
         </div>
     )

@@ -3,7 +3,7 @@ export async function checkingLoginPasswordProps(login: string, password: string
         return {
             status: false,
             inputField: 'login',
-            message: 'login is too short'
+            message: 'логин слишком короткий'
         }
     }
 
@@ -11,7 +11,7 @@ export async function checkingLoginPasswordProps(login: string, password: string
         return {
             status: false,
             inputField: 'password',
-            message: 'password is too short'
+            message: 'пароль слишком короткий'
         }
     }
 
@@ -19,7 +19,7 @@ export async function checkingLoginPasswordProps(login: string, password: string
         return {
             status: false,
             inputField: 'login',
-            message: 'email format error'
+            message: 'неправильный формат почты'
         }
     } 
 

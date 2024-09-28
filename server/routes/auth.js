@@ -1,6 +1,7 @@
+
 const { Pool } = require('pg')
-const { encodeData, decodePassword } = require('./bcryptData')
-const { createToken, writeTokenInDB, decodedToken, tokenExistInDB, tokenInfo } = require('./jwtToken')
+const { encodeData, decodePassword } = require('../controllers/bcryptData')
+const { createToken, writeTokenInDB, tokenExistInDB, tokenInfo } = require('../controllers/jwtToken')
 const { logger, authLogger } = require('../utils/log')
 const pool = new Pool({
     user: process.env.DATABASE_USER,
@@ -136,26 +137,10 @@ const updateToken = async (req, res) => {
   }
 }
 
-const pizzaList = async (req, res) => {
-    try {
-      const queryString = 'SELECT * FROM pizza'
-      const result = await pool.query(queryString)
-  
-      res.status(200).json(result.rows)
-    } catch (error) {
-      logger.error(error)
-
-      return res.status(500).json({
-        message: 'An error'
-      })
-    }
-  }
-
 module.exports = {
     createNewUser,
     checkEmail,
     login,
     checkToken,
-    updateToken,
-    pizzaList
+    updateToken
 }
