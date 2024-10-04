@@ -28,8 +28,29 @@ export enum ETokenType {
     token_refresh = 'token_refresh'
 }
 
-export enum ESortValues {
+export enum ESortingTypes {
     pizzaPriceASC = 'pizza_price ASC',
     pizzaPriceDESC = 'pizza_price DESC',
     pizzaRatingDESC = 'pizza_rating DESC',
+}
+
+export interface IFilterPizza {
+    priceRangeMin: number, 
+    priceRangeMax: number, 
+    currentMinPrice: number, 
+    currentMaxPrice: number,
+    sortingType: ESortingTypes,
+    paginationPage: number,
+    changeCurrentMinPrice: (value: number) => void,
+    changeCurrentMaxPrice: (value: number) => void,
+    changeSortingType: (value: ESortingTypes) => void,
+    changePaginationPage: (value: number) => void
+}
+
+export interface IPagePagination {
+    paginationPage: number,
+    changePaginationPage: (value: number) => void,
+    currentMinPrice: number,
+    currentMaxPrice: number,
+    sortingType: ESortingTypes
 }

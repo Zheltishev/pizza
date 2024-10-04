@@ -1,11 +1,11 @@
 import { Button, DialogTitle, FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack, TextField } from "@mui/material";
 import { useState } from "react";
-import signUpNewUser from "../../middleware/signUpNewUser";
-import { IAuthFromProps, IAuthFormData } from "../../tsModals/tsModals";
-import loginUser from "../../middleware/loginUser";
+import { IAuthFromProps, IAuthFormData } from "../../../tsModals/tsModals";
 import { useDispatch } from "react-redux";
-import { changeUserAuthorize, changeUserName } from "../../redux/userDataSlice";
+import { changeUserAuthorize, changeUserName } from "../../../redux/userDataSlice";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import signUpNewUser from "../../../middleware/signUpNewUser";
+import loginUser from "../../../middleware/loginUser";
 
 export default function AuthForm( props: IAuthFromProps ) {
     const [titleText, setTitleText] = useState('У вас есть аккаунт?')

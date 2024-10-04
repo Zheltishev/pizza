@@ -4,7 +4,7 @@ import DonutLargeIcon from '@mui/icons-material/DonutLarge';
 import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
 import GrassIcon from '@mui/icons-material/Grass';
 import StarRateIcon from '@mui/icons-material/StarRate';
-import { IPizza } from "../../tsModals/tsModals"
+import { IPizza } from "../../../tsModals/tsModals"
 import { AddShoppingCart } from "@mui/icons-material"
 import { amber, grey } from "@mui/material/colors"
 

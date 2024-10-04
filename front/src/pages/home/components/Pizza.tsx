@@ -1,10 +1,10 @@
 import { useEffect } from "react"
-import { IPizza } from "../../tsModals/tsModals"
+import { IPizza } from "../../../tsModals/tsModals"
 import PizzaItem from "./PizzaItem"
 import { Grid2 } from "@mui/material"
 import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "../../redux/store"
-import { changePizzaList } from "../../redux/pizzaListSlice"
+import { RootState } from "../../../redux/store"
+import { changePizzaList } from "../../../redux/pizzaListSlice"
 
 export default function Pizza() {
     const dispatch = useDispatch()

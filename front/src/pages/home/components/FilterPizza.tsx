@@ -6,63 +6,26 @@ import StarRateIcon from '@mui/icons-material/StarRate';
 import Grid from '@mui/material/Grid2';
 import CurrencyRubleIcon from '@mui/icons-material/CurrencyRuble';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
-import { useEffect, useState } from "react";
-import filteredPizza from "../../middleware/filteredPizza";
-import { useDispatch } from "react-redux";
-import { changePizzaList } from "../../redux/pizzaListSlice";
+import { useState } from "react"
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { ESortValues } from "../../tsModals/tsModals";
 import { useSearchParams } from "react-router-dom";
-let rangeMinValue = 400
-let rangeMaxValue = 700
+import { ESortingTypes, IFilterPizza } from "../../../tsModals/tsModals";
 
-export default function FilterPizza() {
-    const dispatch = useDispatch()
-    const [serachParams, setSearchParams] = useSearchParams()
-    const [rangeValue, setRangeValue] = useState<number[]>([rangeMinValue, rangeMaxValue])
+export default function FilterPizza(filterProps: IFilterPizza) {
+    const { 
+      priceRangeMin, 
+      priceRangeMax, 
+      currentMinPrice, 
+      currentMaxPrice,
+      sortingType,
+      changeCurrentMinPrice,
+      changeCurrentMaxPrice,
+      changeSortingType,
+      changePaginationPage
+    } = filterProps
+    const [searchParams, setSearchParams] = useSearchParams()
     const [sortOpen, setSortOpen] = useState(false)
-    const [sortValue, setSortValue] = useState<ESortValues>(ESortValues.pizzaPriceASC)
     const minDistance = 10
-
-    useEffect(() => {
-      fetch('http://localhost:8000/get-min-max-price')
-        .then(res => res.json())
-        .then(res => {
-          rangeMinValue = Number(res.min)
-          rangeMaxValue = Number(res.max)
-
-          // if there is URL params get value for states price and sorting
-          if (serachParams.get('minprice') && serachParams.get('maxprice') && serachParams.get('sort')) {
-            setRangeValue([Number(serachParams.get('minprice')), Number(serachParams.get('maxprice'))])
-            serachParams.get('sort') === ESortValues.pizzaPriceASC 
-              ? setSortValue(ESortValues.pizzaPriceASC) 
-              : serachParams.get('sort') === ESortValues.pizzaPriceDESC
-                ? setSortValue(ESortValues.pizzaPriceDESC) : setSortValue(ESortValues.pizzaRatingDESC)
-          } else {
-            setRangeValue([Number(res.min), Number(res.max)])
-          }
-
-          return
-        })
-    }, [])
-
-    useEffect(() => {
-      async function pizzaFilter() {
-        if (serachParams.get('minprice') && serachParams.get('maxprice') && serachParams.get('sort')) {
-          setSearchParams({
-            minprice: rangeValue[0].toString(),
-            maxprice: rangeValue[1].toString(),
-            sort: sortValue
-          })
-        }
-        
-        const filteredPrice =  await filteredPizza(rangeValue, sortValue)
-  
-        dispatch(changePizzaList(filteredPrice))
-      }
-
-      pizzaFilter()
-    }, [dispatch, rangeValue, sortValue, setSearchParams, serachParams])
 
     const rangeChange = (
       event: Event,
@@ -74,22 +37,26 @@ export default function FilterPizza() {
       }
   
       if (activeThumb === 0) {
-        const newMinValue = Math.min(newValue[0], rangeValue[1] - minDistance)
+        const newMinValue = Math.min(newValue[0], currentMaxPrice - minDistance)
 
-        setRangeValue([newMinValue, rangeValue[1]])
+        changeCurrentMinPrice(newMinValue)
+        changePaginationPage(1)
         setSearchParams({
           minprice: newMinValue.toString(),
-          maxprice: rangeValue[1].toString(),
-          sort: sortValue
+          maxprice: currentMaxPrice.toString(),
+          sort: sortingType,
+          page: String(1)
         })
       } else {
-        const newMaxValue = Math.max(newValue[1], rangeValue[0] + minDistance)
+        const newMaxValue = Math.max(newValue[1], currentMinPrice + minDistance)
 
-        setRangeValue([rangeValue[0], newMaxValue])
+        changeCurrentMaxPrice(newMaxValue)
+        changePaginationPage(1)
         setSearchParams({
-          minprice: rangeValue[0].toString(),
+          minprice: currentMinPrice.toString(),
           maxprice: newMaxValue.toString(),
-          sort: sortValue
+          sort: sortingType,
+          page: String(1)
         })
       }
     };
@@ -116,12 +83,12 @@ export default function FilterPizza() {
                       sx={{ width: 300 }}>
                         <Slider 
                             getAriaLabel={() => 'Minimum distance'}
-                            value={rangeValue}
+                            value={[currentMinPrice, currentMaxPrice]}
                             onChange={rangeChange}
                             valueLabelDisplay="auto"
-                            min={rangeMinValue}
-                            max={rangeMaxValue}
-                            defaultValue={rangeMinValue}
+                            min={priceRangeMin}
+                            max={priceRangeMax}
+                            defaultValue={priceRangeMin}
                             step={10}
                             disableSwap
                             marks
@@ -159,11 +126,13 @@ export default function FilterPizza() {
                       }}}
                       onClick={() => {
                         setSortOpen(false)
-                        setSortValue(ESortValues.pizzaPriceASC)
+                        changeSortingType(ESortingTypes.pizzaPriceASC)
+                        changePaginationPage(1)
                         setSearchParams({
-                          minprice: rangeValue[0].toString(),
-                          maxprice: rangeValue[1].toString(),
-                          sort: ESortValues.pizzaPriceASC
+                          minprice: currentMinPrice.toString(),
+                          maxprice: currentMaxPrice.toString(),
+                          sort: ESortingTypes.pizzaPriceASC,
+                          page: String(1)
                         })
                       }}
                     >
@@ -179,11 +148,13 @@ export default function FilterPizza() {
                       }}}
                       onClick={() => {
                         setSortOpen(false)
-                        setSortValue(ESortValues.pizzaPriceDESC)
+                        changeSortingType(ESortingTypes.pizzaPriceDESC)
+                        changePaginationPage(1)
                         setSearchParams({
-                          minprice: rangeValue[0].toString(),
-                          maxprice: rangeValue[1].toString(),
-                          sort: ESortValues.pizzaPriceDESC
+                          minprice: currentMinPrice.toString(),
+                          maxprice: currentMaxPrice.toString(),
+                          sort: ESortingTypes.pizzaPriceDESC,
+                          page: String(1)
                         })
                       }}
                     >
@@ -199,11 +170,13 @@ export default function FilterPizza() {
                       }}}
                       onClick={() => {
                         setSortOpen(false)
-                        setSortValue(ESortValues.pizzaRatingDESC)
+                        changeSortingType(ESortingTypes.pizzaRatingDESC)
+                        changePaginationPage(1)
                         setSearchParams({
-                          minprice: rangeValue[0].toString(),
-                          maxprice: rangeValue[1].toString(),
-                          sort: ESortValues.pizzaRatingDESC
+                          minprice: currentMinPrice.toString(),
+                          maxprice: currentMaxPrice.toString(),
+                          sort: ESortingTypes.pizzaRatingDESC,
+                          page: String(1)
                         })
                       }}
                     >
@@ -219,8 +192,16 @@ export default function FilterPizza() {
 
             <Box
               onClick={() => {
-                setSortValue(ESortValues.pizzaPriceASC)
-                setRangeValue([rangeMinValue, rangeMaxValue])
+                changeSortingType(ESortingTypes.pizzaPriceASC)
+                changeCurrentMinPrice(priceRangeMin)
+                changeCurrentMaxPrice(priceRangeMax)
+                changePaginationPage(1)
+                setSearchParams({
+                  minprice: priceRangeMin.toString(),
+                  maxprice: priceRangeMax.toString(),
+                  sort: ESortingTypes.pizzaPriceASC,
+                  page: String(1)
+                })
               }}
             >
               <RotateLeftIcon 
