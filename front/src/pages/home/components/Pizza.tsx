@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { IPizza } from "../../../tsModals/tsModals"
 import PizzaItem from "./PizzaItem"
 import { Grid2 } from "@mui/material"
@@ -9,11 +9,15 @@ import { changePizzaList } from "../../../redux/pizzaListSlice"
 export default function Pizza() {
     const dispatch = useDispatch()
     const { pizzaList } = useSelector((state: RootState) => state.rootReducer.pizzaListSlice)
+    const [ isLoading, setIsLoading ] = useState(true)
 
     useEffect(() => {
         fetch('http://localhost:8000/pizza-list')
             .then(res => res.json())
-            .then(res => dispatch(changePizzaList(res)))
+            .then(res => {
+                dispatch(changePizzaList(res))
+                setIsLoading(false)
+            })
     }, [dispatch])
 
     return (
@@ -34,7 +38,7 @@ export default function Pizza() {
                         size={{ xs: 12, md: 3 }} 
                         key={ pizza.pizza_id }
                     >
-                        <PizzaItem {...pizza} />
+                        <PizzaItem isLoading={isLoading} {...pizza} />
                     </Grid2>
             ))
         }

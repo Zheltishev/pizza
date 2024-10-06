@@ -62,7 +62,6 @@ const currentPizzaCount = async (req, res) => {
     const values = [minValue, maxValue]
     const result = await pool.query(filterQuery, values)
 
-    console.log(result.rows[0])
     res.status(200).json(result.rows[0])
   } catch (error) {
     logger.error(`currentPizzaCount: ${error}`)

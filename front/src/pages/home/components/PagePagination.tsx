@@ -32,7 +32,7 @@ export default function PagePagination(paginationProps: IPagePagination) {
             
             if (searchParams.size > 0 && Number(searchParams.get('page')) <= Math.ceil(Number(res.count) / 8 )) {
                 changePaginationPage(Number(searchParams.get('page')))
-            } else {
+            } else if (searchParams.size > 0) {
                 changePaginationPage(1)
                 setSearchParams({
                     minprice: currentMinPrice.toString(),
