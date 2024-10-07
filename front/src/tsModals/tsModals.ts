@@ -86,3 +86,12 @@ export interface IPizzaModal {
     pizza_rating: number,
     closePizzaModal: (value: boolean) => void
 }
+
+export interface IOrderPizza {
+    pizza_id: number,
+    pizza_name: string,
+    pizza_image_name: string,
+    pizza_size: string,
+    pizza_dough: string,
+    pizza_price: number
+}

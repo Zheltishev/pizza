@@ -1,11 +1,13 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import userDataSlice from "./userDataSlice";
 import pizzaListSlice from "./pizzaListSlice";
+import basketListSlice from "./basketListSlice";
 
 
 const rootReducer = combineReducers({
     userDataSlice,
-    pizzaListSlice
+    pizzaListSlice,
+    basketListSlice
 })
 
 export const store = configureStore({

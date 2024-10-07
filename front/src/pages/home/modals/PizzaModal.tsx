@@ -7,6 +7,8 @@ import GrassIcon from '@mui/icons-material/Grass';
 import { IPizzaModal } from "../../../tsModals/tsModals";
 import { useState } from "react";
 import { amber } from "@mui/material/colors";
+import { useDispatch } from "react-redux";
+import { basketAddPizza } from "../../../redux/basketListSlice";
 
 export default function PizzaModal({...pizza }: IPizzaModal) {
     const {
@@ -18,12 +20,12 @@ export default function PizzaModal({...pizza }: IPizzaModal) {
         pizza_size,
         pizza_dough,
         pizza_hot,
-        pizza_meat,
         pizza_vegetarian,
         pizza_mix,
         pizza_rating,
         closePizzaModal
     } = pizza
+    const dispatch = useDispatch()
     const [ orderSize, setOrderSize ] = useState(pizza_size.split(' ')[0])
     const [ orderDough, setOrderDough ] = useState(pizza_dough.split(' ')[0])
     const [ sizeIndex, setSizeIndex ] = useState(1)
@@ -131,13 +133,15 @@ export default function PizzaModal({...pizza }: IPizzaModal) {
                             startIcon={<AddShoppingCartIcon />}
                             sx={{ marginInline: '8px' }}
                             onClick={() => {
-                                console.log(`
-                                        pizza id: ${pizza_id}
-                                        name: ${pizza_name}
-                                        size: ${orderSize}
-                                        dough: ${orderDough}
-                                        price: ${Math.trunc(pizza_price * sizeIndex)}
-                                    `)
+                                const orderPizza = {
+                                    pizza_id: pizza_id,
+                                    pizza_name: pizza_name,
+                                    pizza_image_name: pizza_image_name,
+                                    pizza_size: orderSize,
+                                    pizza_dough: orderDough,
+                                    pizza_price: Math.trunc(pizza_price * sizeIndex)
+                                }
+                                dispatch(basketAddPizza(orderPizza))
                                 closePizzaModal(false)
                             }}
                         >

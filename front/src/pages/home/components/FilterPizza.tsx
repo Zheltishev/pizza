@@ -1,8 +1,9 @@
-import { Box, Collapse, List, ListItemButton, ListItemIcon, ListItemText, Slider, Typography } from "@mui/material";
+import { Badge, Box, Collapse, List, ListItemButton, ListItemIcon, ListItemText, Slider, Typography } from "@mui/material";
 import SortIcon from '@mui/icons-material/Sort';
 import NorthIcon from '@mui/icons-material/North';
 import SouthIcon from '@mui/icons-material/South';
 import StarRateIcon from '@mui/icons-material/StarRate';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Grid from '@mui/material/Grid2';
 import CurrencyRubleIcon from '@mui/icons-material/CurrencyRuble';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
@@ -10,6 +11,9 @@ import { useState } from "react"
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useSearchParams } from "react-router-dom";
 import { ESortingTypes, IFilterPizza } from "../../../tsModals/tsModals";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import BasketDrawer from "./BasketDrawer";
 
 export default function FilterPizza(filterProps: IFilterPizza) {
     const { 
@@ -23,9 +27,15 @@ export default function FilterPizza(filterProps: IFilterPizza) {
       changeSortingType,
       changePaginationPage
     } = filterProps
-    const [searchParams, setSearchParams] = useSearchParams()
-    const [sortOpen, setSortOpen] = useState(false)
+    const [ searchParams, setSearchParams ] = useSearchParams()
+    const { basketList } = useSelector((state: RootState) => state.rootReducer.basketListSlice )
+    const [ sortOpen, setSortOpen ] = useState(false)
+    const [ openBasketDrawer, setOpenBasketDrawer ] = useState(false)
     const minDistance = 10
+
+    const closeBasketDrawer = (value: boolean) => {
+      setOpenBasketDrawer(value)
+    }
 
     const rangeChange = (
       event: Event,
@@ -217,6 +227,27 @@ export default function FilterPizza(filterProps: IFilterPizza) {
                 }}
               />
             </Box>
+
+            <Box>
+              <Badge 
+                badgeContent={basketList.length} 
+                color="primary" 
+                onClick={() => {
+                  setOpenBasketDrawer(true)
+                }}
+                sx={{
+                  cursor: 'pointer',
+                  transition: '0.2s',
+                  '&:hover': {
+                    transform: 'scale(1.1)'
+                  }
+                }}
+              >
+                <ShoppingCartIcon color="primary" />
+              </Badge>
+            </Box>
+
+            <BasketDrawer closeBasketDrawer={closeBasketDrawer} openBasketDrawer={openBasketDrawer} />
         </Grid>
     )
 }
