@@ -1,4 +1,4 @@
-import { Badge, Box, Collapse, List, ListItemButton, ListItemIcon, ListItemText, Slider, Typography } from "@mui/material";
+import { Badge, Box, Collapse, Grid2, List, ListItemButton, ListItemIcon, ListItemText, Slider, Typography } from "@mui/material";
 import SortIcon from '@mui/icons-material/Sort';
 import NorthIcon from '@mui/icons-material/North';
 import SouthIcon from '@mui/icons-material/South';
@@ -76,12 +76,25 @@ export default function FilterPizza(filterProps: IFilterPizza) {
           container 
           sx={{
             padding: '0.5rem 1rem 0 1rem', 
-            justifyContent: 'end',
-            alignItems: 'center'
+            alignItems: 'center',
+            justifyContent: {
+              xs: 'center',
+              md: 'end'
+            }
           }}
-          spacing={4}
+          spacing={{
+            xs: 1,
+            md: 4
+          }}
         > 
-            <Box>
+            <Box
+              sx={{
+                flexGrow: {
+                  xs: 1,
+                  md: 1
+                }
+              }}
+            >
                 <Typography>
                     Цена
                 </Typography>
@@ -90,7 +103,11 @@ export default function FilterPizza(filterProps: IFilterPizza) {
                         <CurrencyRubleIcon />
                     </Grid>
                     <Grid 
-                      sx={{ width: 300 }}>
+                      sx={{ minWidth: {
+                          md: 300,
+                          xs: 240,
+                        }
+                      }}>
                         <Slider 
                             getAriaLabel={() => 'Minimum distance'}
                             value={[currentMinPrice, currentMaxPrice]}
@@ -107,7 +124,14 @@ export default function FilterPizza(filterProps: IFilterPizza) {
                 </Grid>
             </Box>
             
-            <Box>
+            <Box
+              sx={{
+                flexGrow: {
+                  xs: 1,
+                  md: 0
+                }
+              }}
+            >
               <List
                 component="nav"
                 aria-labelledby="nested-list-subheader"
@@ -200,52 +224,61 @@ export default function FilterPizza(filterProps: IFilterPizza) {
               </List>
             </Box>
 
-            <Box
-              onClick={() => {
-                changeSortingType(ESortingTypes.pizzaPriceASC)
-                changeCurrentMinPrice(priceRangeMin)
-                changeCurrentMaxPrice(priceRangeMax)
-                changePaginationPage(1)
-                setSearchParams({
-                  minprice: priceRangeMin.toString(),
-                  maxprice: priceRangeMax.toString(),
-                  sort: ESortingTypes.pizzaPriceASC,
-                  page: String(1)
-                })
-              }}
-            >
-              <RotateLeftIcon 
-                color="primary"
-                sx={{
-                  fontSize: '2rem',
-                  marginTop: '0.5rem',
-                  cursor: 'pointer',
-                  transition: '0.2s',
-                  '&:hover': {
-                    transform: 'rotate(-90deg)'
-                  }
-                }}
-              />
-            </Box>
-
-            <Box>
-              <Badge 
-                badgeContent={basketList.map(e => e.pizza_count).reduce((a, b) => a + b, 0)} 
-                color="primary" 
+            <Grid2 container sx={{ 
+              alignItems: 'center',
+              justifyContent: 'end',
+              flexGrow: {
+                xs: 1,
+                md: 0
+              }
+             }}>
+              <Box
                 onClick={() => {
-                  setOpenBasketDrawer(true)
-                }}
-                sx={{
-                  cursor: 'pointer',
-                  transition: '0.2s',
-                  '&:hover': {
-                    transform: 'scale(1.1)'
-                  }
+                  changeSortingType(ESortingTypes.pizzaPriceASC)
+                  changeCurrentMinPrice(priceRangeMin)
+                  changeCurrentMaxPrice(priceRangeMax)
+                  changePaginationPage(1)
+                  setSearchParams({
+                    minprice: priceRangeMin.toString(),
+                    maxprice: priceRangeMax.toString(),
+                    sort: ESortingTypes.pizzaPriceASC,
+                    page: String(1)
+                  })
                 }}
               >
-                <ShoppingCartIcon color="primary" />
-              </Badge>
-            </Box>
+                <RotateLeftIcon 
+                  color="primary"
+                  sx={{
+                    fontSize: '2rem',
+                    marginTop: '0.5rem',
+                    cursor: 'pointer',
+                    transition: '0.2s',
+                    '&:hover': {
+                      transform: 'rotate(-90deg)'
+                    }
+                  }}
+                />
+              </Box>
+
+              <Box>
+                <Badge 
+                  badgeContent={basketList.map(e => e.pizza_count).reduce((a, b) => a + b, 0)} 
+                  color="primary" 
+                  onClick={() => {
+                    setOpenBasketDrawer(true)
+                  }}
+                  sx={{
+                    cursor: 'pointer',
+                    transition: '0.2s',
+                    '&:hover': {
+                      transform: 'scale(1.1)'
+                    }
+                  }}
+                >
+                  <ShoppingCartIcon color="primary" />
+                </Badge>
+              </Box>
+            </Grid2>
 
             <BasketDrawer closeBasketDrawer={closeBasketDrawer} openBasketDrawer={openBasketDrawer} />
         </Grid>

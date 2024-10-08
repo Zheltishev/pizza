@@ -69,7 +69,13 @@ export default function AuthForm( props: IAuthFromProps ) {
     }
 
     return (
-        <Stack sx={{padding: '1rem 2rem', minWidth: 420}}>
+        <Stack sx={{
+            padding: '1rem', 
+            minWidth: {
+                xs: 300,
+                md: 420
+            }
+        }}>
             <DialogTitle sx={{ textAlign: 'center', paddingBlock: 0 }}> {titleText} </DialogTitle>
 
             {
@@ -77,7 +83,14 @@ export default function AuthForm( props: IAuthFromProps ) {
                 <Stack
                     direction={'row'}
                     spacing={2}
-                    sx={{justifyContent: 'center', marginTop: '1rem'}}
+                    sx={{
+                        justifyContent: 'center', 
+                        marginTop: '1rem',
+                        flexDirection: {
+                            xs: 'column'
+                        },
+                        gap: '10px'
+                    }}
                 >
                     <Button 
                         variant="outlined" 
@@ -93,6 +106,9 @@ export default function AuthForm( props: IAuthFromProps ) {
 
                     <Button 
                         variant="outlined" 
+                        sx={{
+                            marginLeft: '0!important'
+                        }}
                         onClick={() => {
                             setTitleText('введите ваши почту и пароль')
                             setShowChoiceButtons(false)

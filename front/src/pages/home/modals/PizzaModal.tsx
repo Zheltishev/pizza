@@ -1,4 +1,4 @@
-import { Box, Button, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid2, Stack, ToggleButtonGroup, ToggleButton, Rating, Avatar } from "@mui/material";
+import { Box, Button, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid2, Stack, ToggleButtonGroup, ToggleButton, Rating, Avatar, Typography } from "@mui/material";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import DonutLargeIcon from '@mui/icons-material/DonutLarge';
@@ -40,9 +40,20 @@ export default function PizzaModal({...pizza }: IPizzaModal) {
             padding: {
                 md: 5,
                 xs: 2
-            } 
+            },
+            overflow: 'auto'
         }} >
-            <Grid2 container spacing={6} sx={{ alignItems: 'center' }} >
+            <Grid2 
+                container 
+                spacing={{
+                    md: 6,
+                    xs: 2
+                }} 
+                sx={{ 
+                    alignItems: 'center',
+                    justifyContent: 'center' 
+                }} 
+            >
                 <Box 
                     component='img'
                     sx={{
@@ -83,7 +94,7 @@ export default function PizzaModal({...pizza }: IPizzaModal) {
                     
                     <DialogContent sx={{ padding: '20px 0' }}>
                         <DialogContentText>
-                            { pizza_ingredients }
+                            <Typography variant="caption">{ pizza_ingredients }</Typography>
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions
