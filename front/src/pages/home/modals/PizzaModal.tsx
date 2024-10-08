@@ -7,8 +7,10 @@ import GrassIcon from '@mui/icons-material/Grass';
 import { IPizzaModal } from "../../../tsModals/tsModals";
 import { useState } from "react";
 import { amber } from "@mui/material/colors";
-import { useDispatch } from "react-redux";
-import { basketAddPizza } from "../../../redux/basketListSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { basketAddPizza, increasePizzaCount } from "../../../redux/basketListSlice";
+import { RootState } from "../../../redux/store";
+import matchPizza from "../middleware/matchPizza";
 
 export default function PizzaModal({...pizza }: IPizzaModal) {
     const {
@@ -26,6 +28,7 @@ export default function PizzaModal({...pizza }: IPizzaModal) {
         closePizzaModal
     } = pizza
     const dispatch = useDispatch()
+    const { basketList } = useSelector((state: RootState) => state.rootReducer.basketListSlice)
     const [ orderSize, setOrderSize ] = useState(pizza_size.split(' ')[0])
     const [ orderDough, setOrderDough ] = useState(pizza_dough.split(' ')[0])
     const [ sizeIndex, setSizeIndex ] = useState(1)
@@ -134,14 +137,17 @@ export default function PizzaModal({...pizza }: IPizzaModal) {
                             sx={{ marginInline: '8px' }}
                             onClick={() => {
                                 const orderPizza = {
-                                    pizza_id: pizza_id,
+                                    pizza_id: Date.now(),
                                     pizza_name: pizza_name,
                                     pizza_image_name: pizza_image_name,
                                     pizza_size: orderSize,
                                     pizza_dough: orderDough,
-                                    pizza_price: Math.trunc(pizza_price * sizeIndex)
+                                    pizza_price: Math.trunc(pizza_price * sizeIndex),
+                                    pizza_count: 1
                                 }
-                                dispatch(basketAddPizza(orderPizza))
+                                const matchedResult = matchPizza(orderPizza, basketList)
+                                
+                                matchedResult !== 0 ? dispatch(increasePizzaCount(matchedResult)) : dispatch(basketAddPizza(orderPizza))
                                 closePizzaModal(false)
                             }}
                         >

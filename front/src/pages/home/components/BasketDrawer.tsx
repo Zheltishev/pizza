@@ -15,7 +15,7 @@ interface IBasketDrawer {
 export default function BasketDrawer(props: IBasketDrawer) {
     const { openBasketDrawer, closeBasketDrawer } = props
     const { basketList } = useSelector((state: RootState) => state.rootReducer.basketListSlice)
-    const totalPrice = basketList.length > 0 ? basketList.map(e => e.pizza_price).reduce((a, b) => a + b) : 0
+    const totalPrice = basketList.length > 0 ? basketList.map(e => e.pizza_price * e.pizza_count).reduce((a, b) => a + b, 0) : 0
 
     return (
         <Drawer 

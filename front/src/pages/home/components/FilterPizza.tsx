@@ -230,7 +230,7 @@ export default function FilterPizza(filterProps: IFilterPizza) {
 
             <Box>
               <Badge 
-                badgeContent={basketList.length} 
+                badgeContent={basketList.map(e => e.pizza_count).reduce((a, b) => a + b, 0)} 
                 color="primary" 
                 onClick={() => {
                   setOpenBasketDrawer(true)

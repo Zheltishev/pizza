@@ -10,7 +10,7 @@ export default function Pizza() {
     const dispatch = useDispatch()
     const { pizzaList } = useSelector((state: RootState) => state.rootReducer.pizzaListSlice)
     const [ isLoading, setIsLoading ] = useState(true)
-
+    
     useEffect(() => {
         fetch('http://localhost:8000/pizza-list')
             .then(res => res.json())

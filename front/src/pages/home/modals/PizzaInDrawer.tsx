@@ -3,18 +3,14 @@ import { IOrderPizza } from "../../../tsModals/tsModals";
 import CloseIcon from '@mui/icons-material/Close';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
-import { basketDeletePizza } from "../../../redux/basketListSlice";
+import { basketDeletePizza, decreasePizzaCount, increasePizzaCount } from "../../../redux/basketListSlice";
 import { useDispatch } from "react-redux";
 import { grey } from "@mui/material/colors";
-import { useState } from "react";
 
 export default function PizzaInDrawer ({...orderPizza}: IOrderPizza) {
     const dispatch = useDispatch()
-    const { pizza_id, pizza_name, pizza_image_name, pizza_dough, pizza_size, pizza_price } = orderPizza
+    const { pizza_id, pizza_name, pizza_image_name, pizza_dough, pizza_size, pizza_price, pizza_count } = orderPizza
     const imgSRC = `http://localhost:8000/images/${pizza_image_name}.png`
-    const [ currentPizzaCount, setCurrentPizzaCount ] = useState(1)
-    const addOneCount = (e: number) => setCurrentPizzaCount(e + 1)
-    const subtractOneCount = (e: number) => setCurrentPizzaCount(e - 1)
 
     return (
         <Grid2 
@@ -48,6 +44,7 @@ export default function PizzaInDrawer ({...orderPizza}: IOrderPizza) {
                     >
                         <Box display='grid'>
                             <Typography variant="button">{pizza_name}</Typography>
+                            <Typography variant="button">{pizza_id}</Typography>
                             <Typography variant="caption">{pizza_size}, {pizza_dough}</Typography>
                         </Box>
                         <Box>
@@ -77,7 +74,9 @@ export default function PizzaInDrawer ({...orderPizza}: IOrderPizza) {
                                 value="left" 
                                 aria-label="left aligned" 
                                 sx={{padding: '5px'}}
-                                onClick={() => addOneCount}
+                                onClick={() => {
+                                    pizza_count > 1 ? dispatch(decreasePizzaCount(pizza_id)) : dispatch(basketDeletePizza(pizza_id))
+                                }}
                             >
                                 <RemoveIcon color="primary" sx={{width: '15px', height: '15px'}} />
                             </ToggleButton>
@@ -86,13 +85,13 @@ export default function PizzaInDrawer ({...orderPizza}: IOrderPizza) {
                                 aria-label="centered" 
                                 sx={{padding: '5px 10px', lineHeight: 1}}
                             >
-                                {currentPizzaCount}
+                                {pizza_count}
                             </ToggleButton>
                             <ToggleButton 
                                 value="right" 
                                 aria-label="right aligned" 
                                 sx={{padding: '5px'}}
-                                onClick={() => subtractOneCount}
+                                onClick={() => dispatch(increasePizzaCount(pizza_id))}
                             >
                                 <AddIcon color="primary" sx={{width: '15px', height: '15px'}} />
                             </ToggleButton>

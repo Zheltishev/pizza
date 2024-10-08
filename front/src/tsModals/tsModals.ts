@@ -93,5 +93,6 @@ export interface IOrderPizza {
     pizza_image_name: string,
     pizza_size: string,
     pizza_dough: string,
-    pizza_price: number
+    pizza_price: number,
+    pizza_count: number
 }
