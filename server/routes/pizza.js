@@ -57,8 +57,8 @@ const getMinMaxPrice = async (req, res) => {
 
 const currentPizzaCount = async (req, res) => {
   try {
-    const { minValue, maxValue, paginationPage } = req.body 
-    let filterQuery = `SELECT COUNT(*) FROM pizza WHERE pizza_price >= $1 AND pizza_price <= $2 LIMIT 8 OFFSET ${paginationPage * 8 - 8}`
+    const { minValue, maxValue } = req.body 
+    let filterQuery = `SELECT COUNT(*) FROM pizza WHERE pizza_price >= $1 AND pizza_price <= $2`
     const values = [minValue, maxValue]
     const result = await pool.query(filterQuery, values)
 

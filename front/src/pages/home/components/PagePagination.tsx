@@ -22,8 +22,7 @@ export default function PagePagination(paginationProps: IPagePagination) {
             },
             body: JSON.stringify({
                 minValue: currentMinPrice,
-                maxValue: currentMaxPrice,
-                paginationPage: paginationPage
+                maxValue: currentMaxPrice
             })
         })
           .then(res => res.json())

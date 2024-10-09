@@ -7,13 +7,14 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Grid from '@mui/material/Grid2';
 import CurrencyRubleIcon from '@mui/icons-material/CurrencyRuble';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useSearchParams } from "react-router-dom";
 import { ESortingTypes, IFilterPizza } from "../../../tsModals/tsModals";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import BasketDrawer from "./BasketDrawer";
+import { basketAddPizza } from "../../../redux/basketListSlice";
 
 export default function FilterPizza(filterProps: IFilterPizza) {
     const { 
@@ -29,6 +30,7 @@ export default function FilterPizza(filterProps: IFilterPizza) {
     } = filterProps
     const [ searchParams, setSearchParams ] = useSearchParams()
     const { basketList } = useSelector((state: RootState) => state.rootReducer.basketListSlice )
+    const dispatch = useDispatch()
     const [ sortOpen, setSortOpen ] = useState(false)
     const [ openBasketDrawer, setOpenBasketDrawer ] = useState(false)
     const minDistance = 10
@@ -70,6 +72,22 @@ export default function FilterPizza(filterProps: IFilterPizza) {
         })
       }
     };
+
+    useEffect(() => {
+      if (localStorage.basketList) {
+        const basketFromLocalStorage = JSON.parse(localStorage.basketList)
+
+        if (basketFromLocalStorage.length > 0) {
+          basketFromLocalStorage.forEach((pizza: any) => {
+            dispatch(basketAddPizza(pizza))
+          })
+        }
+      } 
+    }, [])
+
+    useEffect(() => {
+      window.localStorage.setItem('basketList', JSON.stringify(basketList))
+    }, [basketList])
 
     return (
         <Grid 

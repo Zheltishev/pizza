@@ -45,6 +45,7 @@ export default function Main() {
                     ? setSortingType(ESortingTypes.pizzaPriceASC) 
                     : searchParams.get('sort') === ESortingTypes.pizzaPriceDESC
                         ? setSortingType(ESortingTypes.pizzaPriceDESC) : setSortingType(ESortingTypes.pizzaRatingDESC)
+                setPaginationPage(Number(searchParams.get('page')))
             } else {
                 setCurrentMinPrice(Number(res.min))
                 setCurrentMaxPrice(Number(res.max))

@@ -44,7 +44,6 @@ export default function PizzaInDrawer ({...orderPizza}: IOrderPizza) {
                     >
                         <Box display='grid'>
                             <Typography variant="button">{pizza_name}</Typography>
-                            <Typography variant="button">{pizza_id}</Typography>
                             <Typography variant="caption">{pizza_size}, {pizza_dough}</Typography>
                         </Box>
                         <Box>
