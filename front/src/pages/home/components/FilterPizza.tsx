@@ -10,7 +10,7 @@ import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 import { useEffect, useState } from "react"
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useSearchParams } from "react-router-dom";
-import { ESortingTypes, IFilterPizza } from "../../../tsModals/tsModals";
+import { ESortingTypes, IFilterPizza, IOrderPizza } from "../../../tsModals/tsModals";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import BasketDrawer from "./BasketDrawer";
@@ -78,7 +78,7 @@ export default function FilterPizza(filterProps: IFilterPizza) {
         const basketFromLocalStorage = JSON.parse(localStorage.basketList)
 
         if (basketFromLocalStorage.length > 0) {
-          basketFromLocalStorage.forEach((pizza: any) => {
+          basketFromLocalStorage.forEach((pizza: IOrderPizza) => {
             dispatch(basketAddPizza(pizza))
           })
         }

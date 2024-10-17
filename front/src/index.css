@@ -7,11 +7,3 @@
 dialog::backdrop {
     background: rgba(0, 0, 0, 0.7);
   }
-
-/* .modal-wrap {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-} */

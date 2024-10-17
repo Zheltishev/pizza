@@ -1,21 +1,23 @@
-import { Box, Button, Drawer, Grid2, Typography } from "@mui/material";
+import { Box, Button, Dialog, Drawer, Grid2, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import CreditScoreIcon from '@mui/icons-material/CreditScore';
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import PizzaInDrawer from "../modals/PizzaInDrawer";
-import { IOrderPizza } from "../../../tsModals/tsModals";
+import { IBasketDrawer, IOrderPizza } from "../../../tsModals/tsModals";
 import { amber } from "@mui/material/colors";
-
-interface IBasketDrawer {
-    openBasketDrawer: boolean,
-    closeBasketDrawer: (value: boolean) => void
-}
+import { useState } from "react";
+import OrderModal from "../modals/OrderModal";
 
 export default function BasketDrawer(props: IBasketDrawer) {
     const { openBasketDrawer, closeBasketDrawer } = props
     const { basketList } = useSelector((state: RootState) => state.rootReducer.basketListSlice)
     const totalPrice = basketList.length > 0 ? basketList.map(e => e.pizza_price * e.pizza_count).reduce((a, b) => a + b, 0) : 0
+    const [ openOrderModal, setOpenOrderModal ] = useState(false)
+
+    const changeOpenOrderModal = (value: boolean) => {
+        setOpenOrderModal(value) 
+    }
 
     return (
         <Drawer 
@@ -72,12 +74,24 @@ export default function BasketDrawer(props: IBasketDrawer) {
                         variant="outlined" 
                         color='primary' 
                         startIcon={<CreditScoreIcon />}
-                        onClick={() => closeBasketDrawer(false)}
+                        disabled={basketList.length > 0 ? false : true}
+                        onClick={() => {
+                            setOpenOrderModal(true)
+                        }}
                     >
                         оформить заказ
                     </Button>
                 </Box>
             </Grid2>
+
+            {openOrderModal && 
+                <Dialog
+                    open={openOrderModal}
+                    onClose={() => changeOpenOrderModal(false)}
+                >
+                    <OrderModal totalPrice={totalPrice} />
+                </Dialog>
+            }
         </Drawer>
     )
 }

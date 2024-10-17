@@ -96,3 +96,12 @@ export interface IOrderPizza {
     pizza_price: number,
     pizza_count: number
 }
+
+export interface IBasketDrawer {
+    openBasketDrawer: boolean,
+    closeBasketDrawer: (value: boolean) => void
+}
+
+export interface IOrderModal {
+    totalPrice: number
+}
