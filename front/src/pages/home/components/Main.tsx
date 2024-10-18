@@ -16,6 +16,8 @@ export default function Main() {
     const [ currentMinPrice, setCurrentMinPrice ] = useState(400)
     const [ currentMaxPrice, setCurrentMaxPrice ] = useState(700)
     const [ sortingType, setSortingType ] = useState<ESortingTypes>(ESortingTypes.pizzaPriceASC)
+    const [ hotPizza, setHotPizza ] = useState(false)
+    const [ vegetarianPizza, setVegetarianPizza ] = useState(false)
     const [ paginationPage, setPaginationPage ] = useState(1)
 
     const changeCurrentMinPrice = (value: number) => {
@@ -26,6 +28,12 @@ export default function Main() {
     }
     const changeSortingType = (value: ESortingTypes) => {
         setSortingType(value)
+    }
+    const changeHotPizza = (value: boolean) => {
+        setHotPizza(value)
+    }
+    const changeVegetarianPizza = (value: boolean) => {
+        setVegetarianPizza(value)
     }
     const changePaginationPage = (value: number) => {
         setPaginationPage(value)
@@ -45,6 +53,8 @@ export default function Main() {
                     ? setSortingType(ESortingTypes.pizzaPriceASC) 
                     : searchParams.get('sort') === ESortingTypes.pizzaPriceDESC
                         ? setSortingType(ESortingTypes.pizzaPriceDESC) : setSortingType(ESortingTypes.pizzaRatingDESC)
+                setHotPizza(searchParams.get('hot') === 'true' ? true : false)
+                setVegetarianPizza(searchParams.get('veg') === 'true' ? true : false)
                 setPaginationPage(Number(searchParams.get('page')))
             } else {
                 setCurrentMinPrice(Number(res.min))
@@ -57,13 +67,13 @@ export default function Main() {
 
       useEffect(() => {
         async function showPizzaListByParams() {
-            const filteredPrice =  await filteredPizza(currentMinPrice, currentMaxPrice, sortingType, paginationPage)
+            const filteredPrice =  await filteredPizza(currentMinPrice, currentMaxPrice, sortingType, hotPizza, vegetarianPizza, paginationPage)
   
             dispatch(changePizzaList(filteredPrice))
         }
 
         showPizzaListByParams()
-      }, [currentMinPrice, currentMaxPrice, sortingType, paginationPage, dispatch])
+      }, [currentMinPrice, currentMaxPrice, sortingType, hotPizza, vegetarianPizza, paginationPage, dispatch])
 
     return (
         <div 
@@ -78,10 +88,14 @@ export default function Main() {
                 currentMinPrice = { currentMinPrice }
                 currentMaxPrice = { currentMaxPrice }
                 sortingType = { sortingType }
+                hotPizza = { hotPizza }
+                vegetarianPizza = { vegetarianPizza }
                 paginationPage = { paginationPage }
                 changeCurrentMinPrice = { changeCurrentMinPrice }
                 changeCurrentMaxPrice = { changeCurrentMaxPrice }
                 changeSortingType = { changeSortingType }
+                changeHotPizza = { changeHotPizza }
+                changeVegetarianPizza = { changeVegetarianPizza }
                 changePaginationPage = { changePaginationPage }
             />
             <Pizza />
@@ -91,6 +105,8 @@ export default function Main() {
                 currentMinPrice = { currentMinPrice }
                 currentMaxPrice = { currentMaxPrice }
                 sortingType = { sortingType }
+                hotPizza = { hotPizza }
+                vegetarianPizza = { vegetarianPizza }
             />
         </div>
     )

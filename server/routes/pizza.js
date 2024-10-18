@@ -25,8 +25,17 @@ const pizzaList = async (req, res) => {
 
 const filteredPizzaList = async (req, res) => {
   try {
-    const { minValue, maxValue, sortValue, paginationPage } = req.body 
+    const { minValue, maxValue, sortValue, hot, veg, paginationPage } = req.body 
     let filterQuery = `SELECT * FROM pizza WHERE pizza_price >= $1 AND pizza_price <= $2 ORDER BY ${sortValue} LIMIT 8 OFFSET ${paginationPage * 8 - 8}`
+
+    if (hot) {
+      filterQuery = `SELECT * FROM pizza WHERE pizza_price >= $1 AND pizza_price <= $2 AND pizza_hot = true ORDER BY ${sortValue} LIMIT 8 OFFSET ${paginationPage * 8 - 8}`
+    }
+
+    if (veg) {
+      filterQuery = `SELECT * FROM pizza WHERE pizza_price >= $1 AND pizza_price <= $2 AND pizza_vegetarian = true ORDER BY ${sortValue} LIMIT 8 OFFSET ${paginationPage * 8 - 8}`
+    }
+
     const values = [minValue, maxValue]
     const filteredResult = await pool.query(filterQuery, values)
 
@@ -57,8 +66,17 @@ const getMinMaxPrice = async (req, res) => {
 
 const currentPizzaCount = async (req, res) => {
   try {
-    const { minValue, maxValue } = req.body 
+    const { minValue, maxValue, hot, veg } = req.body 
     let filterQuery = `SELECT COUNT(*) FROM pizza WHERE pizza_price >= $1 AND pizza_price <= $2`
+
+    if (hot) {
+      filterQuery = `SELECT COUNT(*) FROM pizza WHERE pizza_price >= $1 AND pizza_price <= $2 AND pizza_hot = true`
+    }
+
+    if (veg) {
+      filterQuery = `SELECT COUNT(*) FROM pizza WHERE pizza_price >= $1 AND pizza_price <= $2 AND pizza_vegetarian = true`
+    }
+
     const values = [minValue, maxValue]
     const result = await pool.query(filterQuery, values)
 

@@ -40,10 +40,14 @@ export interface IFilterPizza {
     currentMinPrice: number, 
     currentMaxPrice: number,
     sortingType: ESortingTypes,
+    hotPizza: boolean,
+    vegetarianPizza: boolean,
     paginationPage: number,
     changeCurrentMinPrice: (value: number) => void,
     changeCurrentMaxPrice: (value: number) => void,
     changeSortingType: (value: ESortingTypes) => void,
+    changeHotPizza: (value: boolean) => void,
+    changeVegetarianPizza: (value: boolean) => void,
     changePaginationPage: (value: number) => void
 }
 
@@ -52,7 +56,9 @@ export interface IPagePagination {
     changePaginationPage: (value: number) => void,
     currentMinPrice: number,
     currentMaxPrice: number,
-    sortingType: ESortingTypes
+    sortingType: ESortingTypes,
+    hotPizza: boolean,
+    vegetarianPizza: boolean
 }
 
 export interface IPizzaItem {

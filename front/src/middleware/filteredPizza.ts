@@ -4,6 +4,8 @@ export default async function filteredPizza(
         currentMinPrice: number, 
         currentMaxPrice: number, 
         sortingType: ESortingTypes,
+        hot: boolean,
+        veg: boolean,
         paginationPage: number
     ) {
     const result = await fetch('http://localhost:8000/filtered-pizza-list', {
@@ -15,6 +17,8 @@ export default async function filteredPizza(
             minValue: currentMinPrice,
             maxValue: currentMaxPrice,
             sortValue: sortingType,
+            hot: hot,
+            veg: veg,
             paginationPage: paginationPage
         })
     })

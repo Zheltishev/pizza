@@ -9,7 +9,9 @@ export default function PagePagination(paginationProps: IPagePagination) {
         changePaginationPage,
         currentMinPrice,
         currentMaxPrice,
-        sortingType
+        sortingType,
+        hotPizza,
+        vegetarianPizza
     } = paginationProps
     const [searchParams, setSearchParams] = useSearchParams()
     const [ countTotalPage, setCountTotalPage ] = useState(1)
@@ -22,7 +24,9 @@ export default function PagePagination(paginationProps: IPagePagination) {
             },
             body: JSON.stringify({
                 minValue: currentMinPrice,
-                maxValue: currentMaxPrice
+                maxValue: currentMaxPrice,
+                hot: hotPizza,
+                veg: vegetarianPizza
             })
         })
           .then(res => res.json())
@@ -37,13 +41,15 @@ export default function PagePagination(paginationProps: IPagePagination) {
                     minprice: currentMinPrice.toString(),
                     maxprice: currentMaxPrice.toString(),
                     sort: sortingType,
+                    hot: hotPizza.toString(),
+                    veg: vegetarianPizza.toString(),
                     page: String(1)
                   })
             }
 
             return
           })
-      }, [currentMinPrice, currentMaxPrice])
+      }, [ currentMinPrice, currentMaxPrice, hotPizza, vegetarianPizza ])
 
     return (
         <Stack sx={{
@@ -61,6 +67,8 @@ export default function PagePagination(paginationProps: IPagePagination) {
                         minprice: currentMinPrice.toString(),
                         maxprice: currentMaxPrice.toString(),
                         sort: sortingType,
+                        hot: hotPizza.toString(),
+                        veg: vegetarianPizza.toString(),
                         page: page.toString()
                       })
                 }}

@@ -1,9 +1,11 @@
-import { Badge, Box, Collapse, Grid2, List, ListItemButton, ListItemIcon, ListItemText, Slider, Typography } from "@mui/material";
+import { Badge, Box, Collapse, Divider, Grid2, List, ListItemButton, ListItemIcon, ListItemText, Slider, Typography } from "@mui/material";
 import SortIcon from '@mui/icons-material/Sort';
 import NorthIcon from '@mui/icons-material/North';
 import SouthIcon from '@mui/icons-material/South';
 import StarRateIcon from '@mui/icons-material/StarRate';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import GrassIcon from '@mui/icons-material/Grass';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import Grid from '@mui/material/Grid2';
 import CurrencyRubleIcon from '@mui/icons-material/CurrencyRuble';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
@@ -22,10 +24,14 @@ export default function FilterPizza(filterProps: IFilterPizza) {
       priceRangeMax, 
       currentMinPrice, 
       currentMaxPrice,
+      hotPizza,
+      vegetarianPizza,
       sortingType,
       changeCurrentMinPrice,
       changeCurrentMaxPrice,
       changeSortingType,
+      changeHotPizza,
+      changeVegetarianPizza,
       changePaginationPage
     } = filterProps
     const [ searchParams, setSearchParams ] = useSearchParams()
@@ -57,6 +63,8 @@ export default function FilterPizza(filterProps: IFilterPizza) {
           minprice: newMinValue.toString(),
           maxprice: currentMaxPrice.toString(),
           sort: sortingType,
+          hot: hotPizza.toString(),
+          veg: vegetarianPizza.toString(),
           page: String(1)
         })
       } else {
@@ -68,6 +76,8 @@ export default function FilterPizza(filterProps: IFilterPizza) {
           minprice: currentMinPrice.toString(),
           maxprice: newMaxValue.toString(),
           sort: sortingType,
+          hot: hotPizza.toString(),
+          veg: vegetarianPizza.toString(),
           page: String(1)
         })
       }
@@ -184,6 +194,8 @@ export default function FilterPizza(filterProps: IFilterPizza) {
                           minprice: currentMinPrice.toString(),
                           maxprice: currentMaxPrice.toString(),
                           sort: ESortingTypes.pizzaPriceASC,
+                          hot: hotPizza.toString(),
+                          veg: vegetarianPizza.toString(),
                           page: String(1)
                         })
                       }}
@@ -206,6 +218,8 @@ export default function FilterPizza(filterProps: IFilterPizza) {
                           minprice: currentMinPrice.toString(),
                           maxprice: currentMaxPrice.toString(),
                           sort: ESortingTypes.pizzaPriceDESC,
+                          hot: hotPizza.toString(),
+                          veg: vegetarianPizza.toString(),
                           page: String(1)
                         })
                       }}
@@ -228,6 +242,8 @@ export default function FilterPizza(filterProps: IFilterPizza) {
                           minprice: currentMinPrice.toString(),
                           maxprice: currentMaxPrice.toString(),
                           sort: ESortingTypes.pizzaRatingDESC,
+                          hot: hotPizza.toString(),
+                          veg: vegetarianPizza.toString(),
                           page: String(1)
                         })
                       }}
@@ -245,21 +261,85 @@ export default function FilterPizza(filterProps: IFilterPizza) {
             <Grid2 container sx={{ 
               alignItems: 'center',
               justifyContent: 'end',
+              paddingRight: '1rem',
               flexGrow: {
                 xs: 1,
                 md: 0
               }
              }}>
+
+              <Box
+                onClick={() => {
+                  changeHotPizza(!hotPizza)
+                  changeVegetarianPizza(false)
+                  changePaginationPage(1)
+                  setSearchParams({
+                    minprice: priceRangeMin.toString(),
+                    maxprice: priceRangeMax.toString(),
+                    sort: sortingType,
+                    hot: (!hotPizza).toString(),
+                    veg: 'false',
+                    page: String(1)
+                  })
+                }}
+              >
+                  <LocalFireDepartmentIcon 
+                    color={ hotPizza ? "primary" : "disabled" }
+                    sx={{
+                      fontSize: '2rem',
+                      marginTop: '8px',
+                      cursor: 'pointer',
+                      transition: '0.2s',
+                      '&:hover': {
+                        transform: 'scale(1.1)'
+                      }
+                    }}
+                  />
+              </Box>
+
+              <Box
+                onClick={() => {
+                  changeVegetarianPizza(!vegetarianPizza)
+                  changeHotPizza(false)
+                  changePaginationPage(1)
+                  setSearchParams({
+                    minprice: priceRangeMin.toString(),
+                    maxprice: priceRangeMax.toString(),
+                    sort: sortingType,
+                    hot: 'false',
+                    veg: (!vegetarianPizza).toString(),
+                    page: String(1)
+                  })
+                }}
+              >
+                  <GrassIcon 
+                    color={ vegetarianPizza ? "primary" : "disabled" }
+                    sx={{
+                      fontSize: '2rem',
+                      marginTop: '5px',
+                      cursor: 'pointer',
+                      transition: '0.2s',
+                      '&:hover': {
+                        transform: 'scale(1.1)'
+                      }
+                    }}
+                  />
+              </Box>
+
               <Box
                 onClick={() => {
                   changeSortingType(ESortingTypes.pizzaPriceASC)
                   changeCurrentMinPrice(priceRangeMin)
                   changeCurrentMaxPrice(priceRangeMax)
+                  changeHotPizza(false)
+                  changeVegetarianPizza(false)
                   changePaginationPage(1)
                   setSearchParams({
                     minprice: priceRangeMin.toString(),
                     maxprice: priceRangeMax.toString(),
                     sort: ESortingTypes.pizzaPriceASC,
+                    hot: 'false',
+                    veg: 'false',
                     page: String(1)
                   })
                 }}
@@ -267,7 +347,7 @@ export default function FilterPizza(filterProps: IFilterPizza) {
                 <RotateLeftIcon 
                   color="primary"
                   sx={{
-                    fontSize: '2rem',
+                    fontSize: '1.9rem',
                     marginTop: '0.5rem',
                     cursor: 'pointer',
                     transition: '0.2s',
@@ -277,6 +357,8 @@ export default function FilterPizza(filterProps: IFilterPizza) {
                   }}
                 />
               </Box>
+
+              <Divider orientation="vertical" variant="middle" flexItem />
 
               <Box>
                 <Badge 
