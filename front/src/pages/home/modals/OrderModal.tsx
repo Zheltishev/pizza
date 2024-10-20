@@ -4,15 +4,19 @@ import CreditScoreIcon from '@mui/icons-material/CreditScore';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import React, { useState } from "react";
-import { IOrderModal } from "../../../tsModals/tsModals";
-import { useSelector } from "react-redux";
+import { IOrderData, IOrderModal } from "../../../tsModals/tsModals";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import createOrder from "../middleware/createOrder";
+import { clearBasket } from "../../../redux/basketListSlice";
 
-export default function OrderModal({ totalPrice }: IOrderModal) {
+export default function OrderModal({ totalPrice, changeOpenOrderModal }: IOrderModal) {
     const { basketList } = useSelector((state: RootState) => state.rootReducer.basketListSlice)
+    const dispatch = useDispatch()
     const { userName } = useSelector((state: RootState) => state.rootReducer.userDataSlice)
     const [ contactModal, setContactModal ] = useState(true)
     const [ cardModal, setCardModal ] = useState(false)
+    const [ orderResultModal, setOrderResultModal ] = useState(false)
     const [ orderPhone, setOrderPhone ] = useState('')
     const [ orderAddress, setOrderAddress ] = useState('')
     const [ cardNumberSectionOne, setCardNumberSectionOne ] = useState('')
@@ -22,9 +26,10 @@ export default function OrderModal({ totalPrice }: IOrderModal) {
     const [ cardMonth, setCardMonth ] = useState('')
     const [ cardYear, setCardYear ] = useState('')
     const [ cardCVV, setCardCVV ] = useState('')
-    const mobileRegex = /^[+]?[0-9]{1}?[\s]?[(]?[0-9]{3}[)]??[\s]?[0-9]{3}[-]?[0-9]{2}[-]?[0-9]{2}$/
+    const mobileRegex = /^[+]?[0-9]{1}?[\s]?[(]?[0-9]{2,3}?[)]?[\s]?[0-9]{2,3}[-]?[0-9]{2}[-]?[0-9]{2}$/
     const landlinePhoneRegex = /^[0-9]{2,3}[-]?[0-9]{2,3}[-]?[0-9]{2,3}$/
     const [ textInPhoneInput, setTextInPhoneInput ] = useState('')
+    const [ orderRequestResult, setOrderRequestResult ] = useState('loading...')
 
     function checkPhone(value: string) {
         const phone = value.trim()
@@ -52,6 +57,17 @@ export default function OrderModal({ totalPrice }: IOrderModal) {
 
         if (sectionNumber === 4) {
             setCardNumberSectionFour(value.toString())
+        }
+    }
+
+    async function checkOrder(orderData: IOrderData) {
+        const checkingResult = await createOrder(orderData)
+
+        if (checkingResult.status === 200) {
+            setOrderRequestResult(checkingResult.message)
+            dispatch(clearBasket())
+        } else {
+            setOrderRequestResult(checkingResult.message)
         }
     }
 
@@ -411,28 +427,42 @@ export default function OrderModal({ totalPrice }: IOrderModal) {
                         variant="outlined" 
                         color='primary' 
                         startIcon={<CreditScoreIcon />}
-                        disabled={ 
-                            cardNumberSectionOne.length === 4 
-                            && cardNumberSectionTwo.length === 4 
-                            && cardNumberSectionThree.length === 4 
-                            && cardNumberSectionFour.length === 4 
-                            && cardMonth.length < 3 && Number(cardMonth) > 0 && Number(cardMonth) <= 12
-                            && cardYear.length === 2 
-                            && Number(cardYear) >= Number(String(new Date().getFullYear()).slice(2, 4)) - 3
-                            && Number(cardYear) <= Number(String(new Date().getFullYear()).slice(2, 4)) + 3
-                            && cardCVV.length === 3
-                                ? false 
-                                : true 
-                        }
+                        // disabled={ 
+                        //     cardNumberSectionOne.length === 4 
+                        //     && cardNumberSectionTwo.length === 4 
+                        //     && cardNumberSectionThree.length === 4 
+                        //     && cardNumberSectionFour.length === 4 
+                        //     && cardMonth.length < 3 && Number(cardMonth) > 0 && Number(cardMonth) <= 12
+                        //     && cardYear.length === 2 
+                        //     && Number(cardYear) >= Number(String(new Date().getFullYear()).slice(2, 4)) - 3
+                        //     && Number(cardYear) <= Number(String(new Date().getFullYear()).slice(2, 4)) + 3
+                        //     && cardCVV.length === 3
+                        //         ? false 
+                        //         : true 
+                        // }
                         onClick={() => {
-                            setContactModal(false)
-                            setCardModal(true)
+                            const orderData = {
+                                orderPhone: orderPhone,
+                                orderAddress: orderAddress,
+                                userName: userName ? userName : 'unregistered',
+                                totalPrice: totalPrice,
+                                orderDate: Date.now(),
+                                basketList: basketList
+                            }
+                            checkOrder(orderData)
+                            setCardModal(false)
+                            setOrderResultModal(true)
                         }}
                     >
                         оплатить {totalPrice} ₽
                     </Button>
                 </Box>
                 </>
+            }
+            {
+                orderResultModal && <Box>
+                    <h2>{orderRequestResult}</h2>
+                </Box>
             }
         </Grid2>
     )

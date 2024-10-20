@@ -109,5 +109,15 @@ export interface IBasketDrawer {
 }
 
 export interface IOrderModal {
-    totalPrice: number
+    totalPrice: number,
+    changeOpenOrderModal: (value: boolean) => void
+}
+
+export interface IOrderData {
+    orderPhone: string,
+    orderAddress: string,
+    userName: string,
+    totalPrice: number,
+    orderDate: number,
+    basketList: IOrderPizza[]
 }

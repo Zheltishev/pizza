@@ -90,9 +90,48 @@ const currentPizzaCount = async (req, res) => {
   }
 }
 
+const createPizzaOrder = async (req, res) => {
+  try {
+    const { 
+      orderPhone,
+      orderAddress,
+      userName,
+      totalPrice,
+      orderDate,
+      basketList
+     } = req.body.orderData
+
+    const queryOrders = `INSERT INTO orders (order_phone, order_address, order_user_name, order_price, order_date) 
+      VALUES ('${orderPhone}', '${orderAddress}', '${userName}', '${totalPrice}', ${orderDate}) RETURNING order_id`
+      const orderResult = await pool.query(queryOrders)
+
+    if (await orderResult.rows[0].order_id) {
+      basketList.forEach(async (e, i) => {
+        const queryComposition = `INSERT INTO composition (composition_order, composition_pizza_name, composition_pizza_count, composition_pizza_price, composition_pizza_dough, composition_pizza_size) 
+          VALUES (${orderResult.rows[0].order_id}, '${basketList[i].pizza_name}', '${basketList[i].pizza_count}', '${basketList[i].pizza_price}', '${basketList[i].pizza_dough}', '${basketList[i].pizza_size}')`
+        await pool.query(queryComposition)
+      })
+    }
+
+    return res.status(200).json({ 
+      status: 200, 
+      message: 'order created' 
+    })
+
+  } catch (error) {
+    logger.error(`pizzaOrder: ${error}`)
+
+    return res.status(400).json({
+      status: 400, 
+      message: 'pizzaOrder error'
+    })
+  }
+}
+
 module.exports = {
     pizzaList,
     filteredPizzaList,
     getMinMaxPrice,
-    currentPizzaCount
+    currentPizzaCount,
+    createPizzaOrder
 }

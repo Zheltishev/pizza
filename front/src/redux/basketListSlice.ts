@@ -36,7 +36,8 @@ const basketListSlice = createSlice({
             } 
 
             return e
-        } ))
+        } )),
+        clearBasket: (state) => void (state.basketList = [])
     }
 })
 
@@ -44,6 +45,7 @@ export const {
     basketAddPizza, 
     basketDeletePizza, 
     increasePizzaCount,
-    decreasePizzaCount
+    decreasePizzaCount,
+    clearBasket
 } = basketListSlice.actions
 export default basketListSlice.reducer

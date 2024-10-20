@@ -89,7 +89,7 @@ export default function BasketDrawer(props: IBasketDrawer) {
                     open={openOrderModal}
                     onClose={() => changeOpenOrderModal(false)}
                 >
-                    <OrderModal totalPrice={totalPrice} />
+                    <OrderModal totalPrice={totalPrice} changeOpenOrderModal={changeOpenOrderModal} />
                 </Dialog>
             }
         </Drawer>
