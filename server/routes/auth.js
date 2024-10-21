@@ -16,9 +16,8 @@ const createNewUser = async (req, res) => {
       const { login, password } = req.body
       const defaultName = login.replace(/@.*$/,"")
       const capitalizedName = defaultName.charAt(0).toUpperCase() + defaultName.slice(1)
-      const currentTime = new Date().toJSON()
-      const query = `INSERT INTO users (user_id, user_name, user_password, user_email, user_created) VALUES (DEFAULT, '${capitalizedName}', $2, $1, '${currentTime}')`
-      const values = [login, encodeData(password) ]
+      const query = `INSERT INTO users (user_name, user_password, user_email, user_created) VALUES ($1, $2, $3, $4)`
+      const values = [capitalizedName, encodeData(password), login, new Date() ]
       await pool.query(query, values)
       
       return res.status(200).json({ status: 200, message: 'new user created in DB' })
@@ -32,24 +31,24 @@ const createNewUser = async (req, res) => {
 const checkEmail = async (req, res) => {
     try {
       const { login } = req.body
-      const query = `SELECT * FROM users WHERE user_email = '${login}'`
-      const result = await pool.query(query)
+      const query = `SELECT * FROM users WHERE user_email = $1`
+      const values = [ login ]
+      const result = await pool.query(query, values)
   
       return res.json({ message: result.rows[0].user_email})
     } catch (error) {
-      logger.error(`check email error: ${error}`)
-
-      return res.status(409).json({ message: error.detail })
+      return res.status(200).json({ message: undefined })
     }
   }
 
 const login = async (req, res) => {
   try {
     const { login, password } = req.body
-    const queryPassword = `SELECT user_password FROM users WHERE user_email = '${login}'`
-    const hashPassword = await pool.query(queryPassword)
-    const queryUserId = `SELECT user_id FROM users WHERE user_email = '${login}'`
-    const userIdInfo = await pool.query(queryUserId)
+    const queryPassword = `SELECT user_password FROM users WHERE user_email = $1`
+    const values = [ login ]
+    const hashPassword = await pool.query(queryPassword, values)
+    const queryUserId = `SELECT user_id FROM users WHERE user_email = $1`
+    const userIdInfo = await pool.query(queryUserId, values)
     const userId = userIdInfo.rows[0].user_id
     const decodeResponse = decodePassword(password, hashPassword.rows[0].user_password)
     
@@ -104,9 +103,7 @@ const checkToken = async (req, res) => {
         userName: userData.rows[0].user_name 
       })
     } else {
-      // logger.error(`error ${tokenType}: is not valid`)
-
-      return res.status(401).json({ status: 401, message: `${tokenType} error` })
+      return res.status(200).json({ status: 401, message: `${tokenType} error` })
     }
   } catch (error) {
     logger.error(error)

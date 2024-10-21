@@ -427,19 +427,19 @@ export default function OrderModal({ totalPrice, changeOpenOrderModal }: IOrderM
                         variant="outlined" 
                         color='primary' 
                         startIcon={<CreditScoreIcon />}
-                        // disabled={ 
-                        //     cardNumberSectionOne.length === 4 
-                        //     && cardNumberSectionTwo.length === 4 
-                        //     && cardNumberSectionThree.length === 4 
-                        //     && cardNumberSectionFour.length === 4 
-                        //     && cardMonth.length < 3 && Number(cardMonth) > 0 && Number(cardMonth) <= 12
-                        //     && cardYear.length === 2 
-                        //     && Number(cardYear) >= Number(String(new Date().getFullYear()).slice(2, 4)) - 3
-                        //     && Number(cardYear) <= Number(String(new Date().getFullYear()).slice(2, 4)) + 3
-                        //     && cardCVV.length === 3
-                        //         ? false 
-                        //         : true 
-                        // }
+                        disabled={ 
+                            cardNumberSectionOne.length === 4 
+                            && cardNumberSectionTwo.length === 4 
+                            && cardNumberSectionThree.length === 4 
+                            && cardNumberSectionFour.length === 4 
+                            && cardMonth.length < 3 && Number(cardMonth) > 0 && Number(cardMonth) <= 12
+                            && cardYear.length === 2 
+                            && Number(cardYear) >= Number(String(new Date().getFullYear()).slice(2, 4)) - 3
+                            && Number(cardYear) <= Number(String(new Date().getFullYear()).slice(2, 4)) + 3
+                            && cardCVV.length === 3
+                                ? false 
+                                : true 
+                        }
                         onClick={() => {
                             const orderData = {
                                 orderPhone: orderPhone,

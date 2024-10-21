@@ -9,7 +9,9 @@ import React, { useEffect, useState } from 'react';
 import checkToken from '../../middleware/checkToken';
 import { changeUserAuthorize, changeUserName } from '../../redux/userDataSlice';
 import { Logout } from '@mui/icons-material';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import AuthForm from '../../pages/home/modals/AuthForm';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
     const dispatch = useDispatch()
@@ -53,9 +55,11 @@ export default function Header() {
                 backgroundColor: '#1A2027'
             }}
         >
-            <Stack>
-                <LocalPizzaIcon sx={{ color: amber[700], fontSize: 50, rotate: '35deg' }} />
-            </Stack>
+            <Link to="/">
+                <Stack>
+                    <LocalPizzaIcon sx={{ color: amber[700], fontSize: 50, rotate: '35deg' }} />
+                </Stack>
+            </Link>
 
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }} >
                 <Tooltip title="Личный кабинет">
@@ -90,17 +94,29 @@ export default function Header() {
             >
                 {userAuthorize 
                     ?
-                    <MenuItem onClick={() => {
-                        document.cookie = "token_access=''; expires=0";
-                        document.cookie = "token_refresh=''; expires=0";
-                        dispatch(changeUserAuthorize(false))
-                        closeAccountMenu()
-                    }}>
-                        <ListItemIcon>
-                            <Logout fontSize="small" />
-                        </ListItemIcon>
-                        Выйти
-                    </MenuItem>
+                    <Box>
+                        <Link to="profile" style={{ textDecoration: 'none' }}>
+                            <MenuItem sx={{
+                                color: 'white'
+                            }}>
+                                <ListItemIcon>
+                                    <PersonOutlineIcon fontSize="small" />
+                                </ListItemIcon>
+                                Профиль
+                            </MenuItem>
+                        </Link>
+                        <MenuItem onClick={() => {
+                            document.cookie = "token_access=''; expires=0";
+                            document.cookie = "token_refresh=''; expires=0";
+                            dispatch(changeUserAuthorize(false))
+                            closeAccountMenu()
+                        }}>
+                            <ListItemIcon>
+                                <Logout fontSize="small" />
+                            </ListItemIcon>
+                            Выйти
+                        </MenuItem>
+                    </Box>
                     :
                     <MenuItem onClick={() => {
                         setAuthFormOpen(true)                        

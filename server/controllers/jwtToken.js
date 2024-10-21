@@ -29,11 +29,20 @@ const decodedToken = (token) => {
 }
 
 const tokenExistInDB = async (token, tokenType) => {
-  const queryToken = `SELECT EXISTS (SELECT 1 FROM tokens WHERE ${tokenType} = $1)`
-  const tokenValues = [ token.replace('Bearer ', '') ]
-  const tokenResult = await pool.query(queryToken, tokenValues)
+  let queryToken3 = ``
 
-  return tokenResult.rows[0].exists
+  if (tokenType === 'token_access') {
+    queryToken3 = `SELECT EXISTS (SELECT 1 FROM tokens WHERE token_access = $1)`
+  }
+
+  if (tokenType === 'token_refresh') {
+    queryToken3 = `SELECT EXISTS (SELECT 1 FROM tokens WHERE token_refresh = $1)`
+  }
+
+  const tokenValues3 = [ token.replace('Bearer ', '') ]
+  const tokenResult3 = await pool.query(queryToken3, tokenValues3)
+
+  return tokenResult3.rows[0].exists
 }
   
 const tokenInfo = (token) => {

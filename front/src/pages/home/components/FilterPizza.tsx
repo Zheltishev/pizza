@@ -132,8 +132,8 @@ export default function FilterPizza(filterProps: IFilterPizza) {
                     </Grid>
                     <Grid 
                       sx={{ minWidth: {
-                          md: 300,
-                          xs: 240,
+                          md: '300px',
+                          xs: '240px',
                         }
                       }}>
                         <Slider 
@@ -165,7 +165,10 @@ export default function FilterPizza(filterProps: IFilterPizza) {
                 aria-labelledby="nested-list-subheader"
                 sx={{
                   position: 'relevant', 
-                  width: '300px'
+                  width: {
+                    md: '300px',
+                    xs: '100%'
+                  }
                 }}
               >
                 <ListItemButton
@@ -178,7 +181,7 @@ export default function FilterPizza(filterProps: IFilterPizza) {
                   { sortOpen ? <ExpandLess color="primary" /> : <ExpandMore color="primary" /> }
                 </ListItemButton>
 
-                <Collapse in={sortOpen} sx={{position: 'absolute', zIndex: 1, minWidth: '300px', backgroundColor: 'black'}}>
+                <Collapse in={sortOpen} sx={{position: 'absolute', zIndex: 1, minWidth: {md: '300px', xs: '100%'}, backgroundColor: 'black'}}>
                   <List
                     component="div" disablePadding
                   >

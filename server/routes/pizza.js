@@ -26,17 +26,22 @@ const pizzaList = async (req, res) => {
 const filteredPizzaList = async (req, res) => {
   try {
     const { minValue, maxValue, sortValue, hot, veg, paginationPage } = req.body 
-    let filterQuery = `SELECT * FROM pizza WHERE pizza_price >= $1 AND pizza_price <= $2 ORDER BY ${sortValue} LIMIT 8 OFFSET ${paginationPage * 8 - 8}`
+
+    if (sortValue !== 'pizza_price ASC' && sortValue !== 'pizza_price DESC' && sortValue !== 'pizza_rating DESC') {
+      throw new Error('sorting data error')
+    }
+
+    let filterQuery = `SELECT * FROM pizza WHERE pizza_price >= $1 AND pizza_price <= $2 ORDER BY ${sortValue} LIMIT 8 OFFSET $3`
 
     if (hot) {
-      filterQuery = `SELECT * FROM pizza WHERE pizza_price >= $1 AND pizza_price <= $2 AND pizza_hot = true ORDER BY ${sortValue} LIMIT 8 OFFSET ${paginationPage * 8 - 8}`
+      filterQuery = `SELECT * FROM pizza WHERE pizza_price >= $1 AND pizza_price <= $2 AND pizza_hot = true ORDER BY ${sortValue} LIMIT 8 OFFSET $3`
     }
 
     if (veg) {
-      filterQuery = `SELECT * FROM pizza WHERE pizza_price >= $1 AND pizza_price <= $2 AND pizza_vegetarian = true ORDER BY ${sortValue} LIMIT 8 OFFSET ${paginationPage * 8 - 8}`
+      filterQuery = `SELECT * FROM pizza WHERE pizza_price >= $1 AND pizza_price <= $2 AND pizza_vegetarian = true ORDER BY ${sortValue} LIMIT 8 OFFSET $3`
     }
 
-    const values = [minValue, maxValue]
+    const values = [minValue, maxValue, (paginationPage * 8 - 8)]
     const filteredResult = await pool.query(filterQuery, values)
 
     return res.status(200).json({ filteredPizzaList: filteredResult.rows })
@@ -101,15 +106,23 @@ const createPizzaOrder = async (req, res) => {
       basketList
      } = req.body.orderData
 
-    const queryOrders = `INSERT INTO orders (order_phone, order_address, order_user_name, order_price, order_date) 
-      VALUES ('${orderPhone}', '${orderAddress}', '${userName}', '${totalPrice}', ${orderDate}) RETURNING order_id`
-      const orderResult = await pool.query(queryOrders)
+    const queryOrder = `INSERT INTO orders (order_phone, order_address, order_user_name, order_price, order_date) VALUES ($1, $2, $3, $4, $5) RETURNING order_id`
+    const orderValues = [ orderPhone, orderAddress, userName, totalPrice, orderDate ]
+    const orderResult = await pool.query(queryOrder, orderValues)
 
     if (await orderResult.rows[0].order_id) {
       basketList.forEach(async (e, i) => {
         const queryComposition = `INSERT INTO composition (composition_order, composition_pizza_name, composition_pizza_count, composition_pizza_price, composition_pizza_dough, composition_pizza_size) 
-          VALUES (${orderResult.rows[0].order_id}, '${basketList[i].pizza_name}', '${basketList[i].pizza_count}', '${basketList[i].pizza_price}', '${basketList[i].pizza_dough}', '${basketList[i].pizza_size}')`
-        await pool.query(queryComposition)
+          VALUES ($1, $2, $3, $4, $5, $6)`
+        const compositionValues = [
+          orderResult.rows[0].order_id, 
+          basketList[i].pizza_name, 
+          basketList[i].pizza_count, 
+          basketList[i].pizza_price, 
+          basketList[i].pizza_dough,
+          basketList[i].pizza_size
+        ]
+        await pool.query(queryComposition, compositionValues)
       })
     }
 
