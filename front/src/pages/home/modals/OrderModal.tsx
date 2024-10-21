@@ -13,7 +13,7 @@ import { clearBasket } from "../../../redux/basketListSlice";
 export default function OrderModal({ totalPrice, changeOpenOrderModal }: IOrderModal) {
     const { basketList } = useSelector((state: RootState) => state.rootReducer.basketListSlice)
     const dispatch = useDispatch()
-    const { userName } = useSelector((state: RootState) => state.rootReducer.userDataSlice)
+    const { userId } = useSelector((state: RootState) => state.rootReducer.userDataSlice)
     const [ contactModal, setContactModal ] = useState(true)
     const [ cardModal, setCardModal ] = useState(false)
     const [ orderResultModal, setOrderResultModal ] = useState(false)
@@ -444,7 +444,7 @@ export default function OrderModal({ totalPrice, changeOpenOrderModal }: IOrderM
                             const orderData = {
                                 orderPhone: orderPhone,
                                 orderAddress: orderAddress,
-                                userName: userName ? userName : 'unregistered',
+                                userId: userId ? userId : 0,
                                 totalPrice: totalPrice,
                                 orderDate: Date.now(),
                                 basketList: basketList

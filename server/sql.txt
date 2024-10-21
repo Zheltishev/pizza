@@ -71,7 +71,7 @@ CREATE TABLE orders (
     order_id serial PRIMARY KEY,
     order_phone text NOT NULL,
     order_address text NOT NULL,
-    order_user_name text NOT NULL,
+    order_user_id serial NOT NULL,
     order_price numeric CONSTRAINT positive_order_price CHECK (order_price > 0),
     order_date bigint NOT NULL
 )

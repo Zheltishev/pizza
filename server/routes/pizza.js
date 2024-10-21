@@ -100,14 +100,14 @@ const createPizzaOrder = async (req, res) => {
     const { 
       orderPhone,
       orderAddress,
-      userName,
+      userId,
       totalPrice,
       orderDate,
       basketList
      } = req.body.orderData
 
-    const queryOrder = `INSERT INTO orders (order_phone, order_address, order_user_name, order_price, order_date) VALUES ($1, $2, $3, $4, $5) RETURNING order_id`
-    const orderValues = [ orderPhone, orderAddress, userName, totalPrice, orderDate ]
+    const queryOrder = `INSERT INTO orders (order_phone, order_address, order_user_id, order_price, order_date) VALUES ($1, $2, $3, $4, $5) RETURNING order_id`
+    const orderValues = [ orderPhone, orderAddress, userId, totalPrice, orderDate ]
     const orderResult = await pool.query(queryOrder, orderValues)
 
     if (await orderResult.rows[0].order_id) {

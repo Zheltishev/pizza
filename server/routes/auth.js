@@ -67,7 +67,8 @@ const login = async (req, res) => {
         .send({
           status: 200, 
           message: 'password correct', 
-          token: `token_access=${accessToken}; token_refresh=${refreshToken}; expires=${date}`
+          token: `token_access=${accessToken}; token_refresh=${refreshToken}; expires=${date}`,
+          userId: userId
         })
     } else {
       logger.error(`user: ${userId}, password error`)
@@ -75,7 +76,8 @@ const login = async (req, res) => {
       return res.status(401).json({ 
         status: 401, 
         message: 'password error',
-        token: ''
+        token: '',
+        userId: 0
       })
     }
 

@@ -2,7 +2,7 @@ import { Button, DialogTitle, FormControl, FormHelperText, IconButton, InputAdor
 import { useState } from "react";
 import { IAuthFromProps, IAuthFormData } from "../../../tsModals/tsModals";
 import { useDispatch } from "react-redux";
-import { changeUserAuthorize, changeUserName } from "../../../redux/userDataSlice";
+import { changeUserAuthorize, changeUserId, changeUserName } from "../../../redux/userDataSlice";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import signUpNewUser from "../../../middleware/signUpNewUser";
 import loginUser from "../../../middleware/loginUser";
@@ -56,6 +56,7 @@ export default function AuthForm( props: IAuthFromProps ) {
             
             dispatch(changeUserAuthorize(true))
             dispatch(changeUserName(loginText))
+            dispatch(changeUserId(signInResponse.userId))
             closeAuthFrom(false)
         } else {
             const error = {

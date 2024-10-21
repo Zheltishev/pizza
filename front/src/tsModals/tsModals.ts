@@ -116,7 +116,7 @@ export interface IOrderModal {
 export interface IOrderData {
     orderPhone: string,
     orderAddress: string,
-    userName: string,
+    userId: number,
     totalPrice: number,
     orderDate: number,
     basketList: IOrderPizza[]

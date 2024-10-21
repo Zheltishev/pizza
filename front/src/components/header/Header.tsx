@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import React, { useEffect, useState } from 'react';
 import checkToken from '../../middleware/checkToken';
-import { changeUserAuthorize, changeUserName } from '../../redux/userDataSlice';
+import { changeUserAuthorize, changeUserId, changeUserName } from '../../redux/userDataSlice';
 import { Logout } from '@mui/icons-material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import AuthForm from '../../pages/home/modals/AuthForm';
@@ -37,6 +37,7 @@ export default function Header() {
             if (resultCheckingToken!.status === 200) {
                 dispatch(changeUserAuthorize(true))
                 dispatch(changeUserName(resultCheckingToken!.userName))
+                dispatch(changeUserId(resultCheckingToken!.userId))
             } else {
                 dispatch(changeUserAuthorize(false))
             }
