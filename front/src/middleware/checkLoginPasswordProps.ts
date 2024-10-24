@@ -1,4 +1,4 @@
-export async function checkingLoginPasswordProps(login: string, password: string) {
+export function checkingLoginPasswordProps(login: string, password: string) {
     if (login.length < 5) {
         return {
             status: false,

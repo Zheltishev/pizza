@@ -2,7 +2,7 @@ import checkLoginDB from "./checkLoginDB";
 import { checkingLoginPasswordProps } from "./checkLoginPasswordProps";
 
 export default async function loginUser(login: string, password: string) {
-    const resultCheckLoginPasswordProps = await checkingLoginPasswordProps(login, password)
+    const resultCheckLoginPasswordProps = checkingLoginPasswordProps(login, password)
     const resultCheckLoginDB = await checkLoginDB (login)
 
     if (resultCheckLoginPasswordProps.status && !resultCheckLoginDB.status) {

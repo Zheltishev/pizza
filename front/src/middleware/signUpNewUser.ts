@@ -3,7 +3,7 @@ import { checkingLoginPasswordProps } from "./checkLoginPasswordProps";
 import createNewUserInDB from "./createNewUserInDB";
 
 export default async function signUpNewUser(login: string, password: string) {
-    const resultCheckLoginPasswordProps = await checkingLoginPasswordProps(login, password)
+    const resultCheckLoginPasswordProps = checkingLoginPasswordProps(login, password)
     const resultCheckLoginDB = await checkLoginDB (login)
 
     if (resultCheckLoginPasswordProps.status && resultCheckLoginDB.status) {
