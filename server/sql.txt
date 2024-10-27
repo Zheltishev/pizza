@@ -73,7 +73,7 @@ CREATE TABLE orders (
     order_address text NOT NULL,
     order_user_id serial NOT NULL,
     order_price numeric CONSTRAINT positive_order_price CHECK (order_price > 0),
-    order_date bigint NOT NULL
+    order_date text NOT NULL
 )
 
 CREATE TABLE composition (

@@ -9,11 +9,11 @@ interface IChildrenProps {
 
 export default function RequireAuth({ children }: IChildrenProps) {
     const location = useLocation()
-    const { userId } = useSelector((state: RootState) => state.rootReducer.userDataSlice)
+    const { userAuthorize } = useSelector((state: RootState) => state.rootReducer.userDataSlice)
 
     return (
         <>
-            { userId === 0 ? <Navigate to='/' state={{ from: location }} /> : children }
+            { !userAuthorize ? <Navigate to='/' state={{ from: location }} /> : children }
         </>
     )
 }

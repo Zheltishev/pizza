@@ -1,6 +1,6 @@
-import { IOrderData } from "../../../tsModals/tsModals";
+import { IOrderWithPizzaList } from "../../../tsModals/tsModals";
 
-export default async function createOrder(orderData: IOrderData) {
+export default async function createOrder(orderData: IOrderWithPizzaList) {
     const res = await fetch('http://localhost:8000/create-pizza-order', {
         method: 'POST',
         headers: {

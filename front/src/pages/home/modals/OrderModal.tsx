@@ -4,11 +4,12 @@ import CreditScoreIcon from '@mui/icons-material/CreditScore';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import React, { useState } from "react";
-import { IOrderData, IOrderModal } from "../../../tsModals/tsModals";
+import { IOrderModal, IOrderWithPizzaList } from "../../../tsModals/tsModals";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import createOrder from "../middleware/createOrder";
 import { clearBasket } from "../../../redux/basketListSlice";
+import moment from "moment";
 
 export default function OrderModal({ totalPrice, changeOpenOrderModal }: IOrderModal) {
     const { basketList } = useSelector((state: RootState) => state.rootReducer.basketListSlice)
@@ -60,7 +61,7 @@ export default function OrderModal({ totalPrice, changeOpenOrderModal }: IOrderM
         }
     }
 
-    async function checkOrder(orderData: IOrderData) {
+    async function checkOrder(orderData: IOrderWithPizzaList) {
         const checkingResult = await createOrder(orderData)
 
         if (checkingResult.status === 200) {
@@ -446,7 +447,7 @@ export default function OrderModal({ totalPrice, changeOpenOrderModal }: IOrderM
                                 orderAddress: orderAddress,
                                 userId: userId ? userId : 0,
                                 totalPrice: totalPrice,
-                                orderDate: Date.now(),
+                                orderDate: moment().format('lll'),
                                 basketList: basketList
                             }
                             checkOrder(orderData)

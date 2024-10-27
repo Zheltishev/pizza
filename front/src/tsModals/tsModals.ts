@@ -113,11 +113,37 @@ export interface IOrderModal {
     changeOpenOrderModal: (value: boolean) => void
 }
 
-export interface IOrderData {
+export interface IOrder {
+    order_address: string,
+    order_date: string,
+    order_id: number,
+    order_phone: string,
+    order_price: number,
+    order_user_id: number,
+}
+
+export interface IOrderWithPizzaList {
     orderPhone: string,
     orderAddress: string,
     userId: number,
     totalPrice: number,
-    orderDate: number,
+    orderDate: string,
     basketList: IOrderPizza[]
+}
+
+export interface IComposition {
+    composition_id: number,
+    composition_order: number,
+    composition_pizza_count: number,
+    composition_pizza_name: string,
+    composition_pizza_price: string,
+    composition_pizza_size: string
+}
+
+export interface IOrderHistory {
+    userId: number
+}
+
+export interface IDate {
+    orderDate: string
 }

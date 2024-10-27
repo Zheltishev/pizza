@@ -141,10 +141,50 @@ const createPizzaOrder = async (req, res) => {
   }
 }
 
+const getUserOrders = async (req, res) => {
+  try {
+    const { userId } = req.body
+    const ordersQuery = `SELECT * FROM orders WHERE order_user_id = $1`
+    const ordersValues = [userId]
+    const ordersResult = await pool.query(ordersQuery, ordersValues)
+
+    return res.status(200).json({
+      message: ordersResult.rows
+    })    
+  } catch (error) {
+    logger.error(`getUserOrders: ${error}`)
+
+    return res.status(400).json({
+      message: []
+    })
+  }
+}
+
+const getOrderComposition = async (req, res) => {
+  try {
+    const { composition_order } = req.body
+    const compositionQuery = `SELECT * FROM composition WHERE composition_order = $1`
+    const compositionValues = [composition_order]
+    const compositionResult = await pool.query(compositionQuery, compositionValues)
+
+    return res.status(200).json({
+      message: compositionResult.rows
+    })    
+  } catch (error) {
+    logger.error(`getOrderComposition: ${error}`)
+
+    return res.status(400).json({
+      message: []
+    })
+  }
+}
+
 module.exports = {
     pizzaList,
     filteredPizzaList,
     getMinMaxPrice,
     currentPizzaCount,
-    createPizzaOrder
+    createPizzaOrder,
+    getUserOrders,
+    getOrderComposition
 }
