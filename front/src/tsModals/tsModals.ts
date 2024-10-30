@@ -141,7 +141,7 @@ export interface IComposition {
 }
 
 export interface IOrderHistory {
-    userId: number
+    userId: number | null
 }
 
 export interface IDate {

@@ -11,6 +11,10 @@ export default function OrderHistory({userId}: IOrderHistory) {
     
     useEffect(() => {
         async function checkResultUserOrders() {
+            if (userId === null) {
+                return
+            }
+
             const checkOrders = await getUserOrders(userId) 
 
             if (checkOrders ) {

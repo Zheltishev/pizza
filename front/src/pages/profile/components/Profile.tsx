@@ -23,7 +23,7 @@ export default function Profile() {
                         xs: '100%'
                     }
                  }}>
-                    <OrderHistory  userId={userId} />
+                    <OrderHistory  userId={userId ? userId : null } />
                 </Box>
             </Grid2>
         </Box>
