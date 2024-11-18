@@ -1,3 +1,5 @@
+import fetch from "cross-fetch"
+
 export default async function checkLoginDB (login: string) {
     const responseValue = await fetch('http://localhost:8000/check-email', {
         method: 'POST',
