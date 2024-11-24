@@ -16,7 +16,7 @@ import { ESortingTypes, IFilterPizza, IOrderPizza } from "../../../tsModals/tsMo
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import BasketDrawer from "./BasketDrawer";
-import { basketAddPizza } from "../../../redux/basketListSlice";
+import { basketAddPizza, clearBasket } from "../../../redux/basketListSlice";
 
 export default function FilterPizza(filterProps: IFilterPizza) {
     const { 
@@ -85,6 +85,7 @@ export default function FilterPizza(filterProps: IFilterPizza) {
 
     useEffect(() => {
       if (localStorage.basketList) {
+        dispatch(clearBasket())
         const basketFromLocalStorage = JSON.parse(localStorage.basketList)
 
         if (basketFromLocalStorage.length > 0) {

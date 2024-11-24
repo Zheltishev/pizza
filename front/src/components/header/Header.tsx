@@ -12,6 +12,7 @@ import { Dashboard, Logout } from '@mui/icons-material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import AuthForm from '../../pages/home/modals/AuthForm';
 import { Link } from 'react-router-dom';
+import { clearBasket } from '../../redux/basketListSlice';
 
 export default function Header() {
     const dispatch = useDispatch()
@@ -124,6 +125,7 @@ export default function Header() {
                             document.cookie = "token_access=''; expires=0";
                             document.cookie = "token_refresh=''; expires=0";
                             dispatch(changeUserAuthorize(false))
+                            dispatch(clearBasket())
                             closeAccountMenu()
                         }}>
                             <ListItemIcon>
