@@ -7,15 +7,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import React, { useEffect, useState } from 'react';
 import checkToken from '../../middleware/checkToken';
-import { changeUserAuthorize, changeUserId, changeUserName } from '../../redux/userDataSlice';
-import { Logout } from '@mui/icons-material';
+import { changeUserAuthorize, changeUserId, changeUserName, changeUserRole } from '../../redux/userDataSlice';
+import { Dashboard, Logout } from '@mui/icons-material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import AuthForm from '../../pages/home/modals/AuthForm';
 import { Link } from 'react-router-dom';
 
 export default function Header() {
     const dispatch = useDispatch()
-    const { userAuthorize, userName } = useSelector((state: RootState) => state.rootReducer.userDataSlice)
+    const { userAuthorize, userName, userRole } = useSelector((state: RootState) => state.rootReducer.userDataSlice)
     const [authFormOpen, setAuthFormOpen] = useState(false)
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const accountMenuState = Boolean(anchorEl);
@@ -38,13 +38,14 @@ export default function Header() {
                 dispatch(changeUserAuthorize(true))
                 dispatch(changeUserName(resultCheckingToken!.userName))
                 dispatch(changeUserId(resultCheckingToken!.userId))
+                dispatch(changeUserRole(resultCheckingToken!.userRole))
             } else {
                 dispatch(changeUserAuthorize(false))
             }
         }
     
         checkAuth()
-    }, [dispatch])
+    }, [dispatch, userAuthorize])
 
     return (
         <Stack 
@@ -106,6 +107,19 @@ export default function Header() {
                                 Профиль
                             </MenuItem>
                         </Link>
+                        {userRole === 'admin' ? 
+                            <Link to="dashboard" style={{ textDecoration: 'none' }}>
+                                <MenuItem sx={{
+                                    color: 'white'
+                                }}>
+                                    <ListItemIcon>
+                                        <Dashboard fontSize="small" />
+                                    </ListItemIcon>
+                                    Dashboard
+                                </MenuItem>
+                            </Link> :
+                            null
+                        }
                         <MenuItem onClick={() => {
                             document.cookie = "token_access=''; expires=0";
                             document.cookie = "token_refresh=''; expires=0";

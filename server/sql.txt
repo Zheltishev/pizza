@@ -85,3 +85,5 @@ CREATE TABLE composition (
     composition_pizza_dough varchar(32) NOT NULL,
     composition_pizza_size varchar(32) NOT NULL
 )
+
+ALTER TABLE users ADD user_role varchar(8)

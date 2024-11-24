@@ -3,6 +3,7 @@ import './App.css';
 import Home from './pages/home/Home';
 import Profile from './pages/profile/components/Profile';
 import RequireAuth from './components/RequireAuth';
+import Dashboard from './pages/dashboard/components/Dashboard';
 
 function App() {
   return (
@@ -13,6 +14,11 @@ function App() {
         <Route path='/profile' element={
           <RequireAuth>
             <Profile />
+          </RequireAuth>
+        } />
+        <Route path='/dashboard' element={
+          <RequireAuth>
+            <Dashboard />
           </RequireAuth>
         } />
       </Routes>

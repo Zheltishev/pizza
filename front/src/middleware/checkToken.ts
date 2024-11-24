@@ -10,7 +10,8 @@ export default async function checkToken() {
             status: 401,
             message: 'there are not tokens in cookie',
             userName: '',
-            userId: 0
+            userId: 0,
+            userRole: ''
         }
     }
 
@@ -23,7 +24,8 @@ export default async function checkToken() {
             status: 200,
             message: verificationAccessToken.message,
             userName: verificationAccessToken.userName,
-            userId: verificationRefreshToken.userId
+            userId: verificationRefreshToken.userId,
+            userRole: verificationRefreshToken.userRole
             
         }
     } else if (Cookies.get('token_refresh') && verificationRefreshToken.status === 200 ) {
@@ -41,7 +43,8 @@ export default async function checkToken() {
                 status: 200,
                 message: verificationUpdatedAccessToken.message,
                 userName: verificationUpdatedAccessToken.userName,
-                userId: verificationUpdatedAccessToken.userId
+                userId: verificationUpdatedAccessToken.userId,
+                userRole: verificationUpdatedAccessToken.userRole
             }
         } 
     } else {
@@ -50,7 +53,8 @@ export default async function checkToken() {
             status: 401,
             message: 'token in cookie is missing',
             userName: '',
-            userId: 0
+            userId: 0,
+            userRole: ''
         }
     }
 }
