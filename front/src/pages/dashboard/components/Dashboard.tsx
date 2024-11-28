@@ -1,11 +1,13 @@
-import { Box, Button, Grid2, Paper, styled, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Box, Button, Dialog, Grid2, Paper, styled, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow } from "@mui/material";
 import Header from "../../../components/header/Header";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { IPizza } from "../../../tsModals/tsModals";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { changePizzaList } from "../../../redux/pizzaListSlice";
 import DashboardItem from "./DashboardItem";
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import ModalAddNewPizza from "./ModalAddNewPizza";
 
 export default function Dashboard() {
     const dispatch = useDispatch()
@@ -19,6 +21,11 @@ export default function Dashboard() {
           fontSize: 14,
         },
       }));
+    const [modalAddPizza, setModalAddPizza] = useState(false)
+
+    const changeModalAddPizza = (value: boolean) => {
+        setModalAddPizza(value)
+    }
     
     useEffect(() => {
         fetch('http://localhost:8000/pizza-list')
@@ -46,9 +53,16 @@ export default function Dashboard() {
                  }}>
                     <h1>Dashboard</h1>
 
-                    <Grid2 style={{ paddingBlock: '1rem' }}>
+                    <Grid2 container style={{ justifyContent: 'end', paddingBlock: '1rem' }}>
                         <Box>
-                            <Button>добавить</Button>
+                            <Button
+                                variant="outlined" 
+                                color='primary'
+                                startIcon={<NoteAddIcon />}
+                                onClick={() => setModalAddPizza(true)}
+                            >
+                                добавить
+                            </Button>
                         </Box>
                     </Grid2>
 
@@ -81,6 +95,14 @@ export default function Dashboard() {
                     
                 </Box>
             </Grid2>
+
+            {modalAddPizza && 
+                <Dialog 
+                    open={modalAddPizza}
+                    onClose={() => setModalAddPizza(false)}
+                >
+                    <ModalAddNewPizza changeModalAddPizza={changeModalAddPizza} />
+                </Dialog>}
         </Box>
     )
 }

@@ -1,5 +1,10 @@
 import { styled, TableCell, tableCellClasses, TableRow } from "@mui/material";
 import { IPizza } from "../../../tsModals/tsModals";
+import CloseIcon from '@mui/icons-material/Close';
+import GrassIcon from '@mui/icons-material/Grass';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import KebabDiningIcon from '@mui/icons-material/KebabDining';
+import JoinLeftIcon from '@mui/icons-material/JoinLeft';
 
 export default function DashboardItem({...pizza}: IPizza) {
     const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -9,6 +14,9 @@ export default function DashboardItem({...pizza}: IPizza) {
         '&:last-child td, &:last-child th': {
           border: 0,
         },
+        '&:hover': {
+          backgroundColor: '#555555'
+        }
       }));
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
         [`&.${tableCellClasses.head}`]: {
@@ -46,10 +54,10 @@ export default function DashboardItem({...pizza}: IPizza) {
             <StyledTableCell align="right">{pizza_size}</StyledTableCell>
             <StyledTableCell align="right">{pizza_dough}</StyledTableCell>
             <StyledTableCell align="right">{pizza_ingredients}</StyledTableCell>
-            <StyledTableCell align="right">{pizza_hot.toString()}</StyledTableCell>
-            <StyledTableCell align="right">{pizza_meat.toString()}</StyledTableCell>
-            <StyledTableCell align="right">{pizza_vegetarian.toString()}</StyledTableCell>
-            <StyledTableCell align="right">{pizza_mix.toString()}</StyledTableCell>
+            <StyledTableCell align="center">{pizza_hot ? <LocalFireDepartmentIcon color="primary" /> : <CloseIcon color="error" />}</StyledTableCell>
+            <StyledTableCell align="center">{pizza_meat ? <KebabDiningIcon color="primary" /> : <CloseIcon color="error" />}</StyledTableCell>
+            <StyledTableCell align="center">{pizza_vegetarian ? <GrassIcon color="primary" /> : <CloseIcon color="error" />}</StyledTableCell>
+            <StyledTableCell align="center">{pizza_mix ? <JoinLeftIcon color="primary" /> : <CloseIcon color="error" />}</StyledTableCell>
             <StyledTableCell align="right">{pizza_rating}</StyledTableCell>
         </StyledTableRow>
     )

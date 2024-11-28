@@ -147,3 +147,20 @@ export interface IOrderHistory {
 export interface IDate {
     orderDate: string
 }
+
+export interface IModalAddPizz {
+    changeModalAddPizza: (value: boolean) => void
+}
+
+export interface INewPizza {
+    newPizzaName: string,
+    pizzaPrice: number,
+    ingredientsList: string,
+    doughTypesString: string,
+    sizesTypeString: string,
+    hotStatus: boolean,
+    vegetarianStatus: boolean,
+    meatStatus: boolean,
+    mixStatus: boolean,
+    imageFile: File
+}

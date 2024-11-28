@@ -1,3 +1,5 @@
+const { dirname } = require('path')
+const serverPath = dirname(require.main.filename)
 const { Pool } = require('pg')
 const { logger } = require('../utils/log')
 const pool = new Pool({
@@ -179,6 +181,35 @@ const getOrderComposition = async (req, res) => {
   }
 }
 
+const createNewPizza = async (req, res) => {
+  try {
+    const {name, price, ingredients, dough, size, hot, vegetarian, meat, mix} = JSON.parse(req.body.data)
+    const image = req.files.pizzaImage
+    const uploadPath = serverPath + '/images/' + image.name
+    const imageName = image.name.replace(/\.(jpg|png|jpeg)$/gi, '')
+
+    image.mv(uploadPath, (err) => {
+      if (err) {
+        return res.status(500).json({ message: 'createNewPizza error' })
+      }
+    })
+
+    const queryInsertPizza = `INSERT INTO pizza (pizza_id, pizza_name, pizza_image_name, pizza_price, pizza_ingredients, 
+      pizza_size, pizza_dough, pizza_hot, pizza_meat, pizza_vegetarian, pizza_mix, pizza_rating) 
+      VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 1.23)`
+    const insertValues = [ name, imageName, price, ingredients, size, dough, hot, meat, vegetarian, mix ]
+    await pool.query(queryInsertPizza, insertValues)
+
+    return res.status(200).json({ message: 'added new pizza' })
+  } catch (error) {
+    logger.error(`createNewPizza: ${error}`)
+
+    return res.status(400).json({
+      message: 'createNewPizza error'
+    })
+  }
+}
+
 module.exports = {
     pizzaList,
     filteredPizzaList,
@@ -186,5 +217,6 @@ module.exports = {
     currentPizzaCount,
     createPizzaOrder,
     getUserOrders,
-    getOrderComposition
+    getOrderComposition,
+    createNewPizza
 }
