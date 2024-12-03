@@ -22,9 +22,14 @@ export default function Dashboard() {
         },
       }));
     const [modalAddPizza, setModalAddPizza] = useState(false)
+    const [updatePizzaList, setUpdatePizzaList] = useState(false)
 
     const changeModalAddPizza = (value: boolean) => {
         setModalAddPizza(value)
+    }
+
+    const changeUpdatePizzaList = (value: boolean) => {
+        setUpdatePizzaList(value)
     }
     
     useEffect(() => {
@@ -33,7 +38,7 @@ export default function Dashboard() {
             .then(res => {
                 dispatch(changePizzaList(res))
             })
-    }, [dispatch])
+    }, [dispatch, updatePizzaList])
 
     return (
         <Box>
@@ -86,7 +91,7 @@ export default function Dashboard() {
                             </TableHead>
                             <TableBody>
                                 {pizzaList.map((pizza: IPizza) => (
-                                    <DashboardItem key={pizza.pizza_id} {...pizza}/>
+                                    <DashboardItem key={pizza.pizza_id} changeUpdatePizzaList={changeUpdatePizzaList} updatePizzaList={updatePizzaList} {...pizza}/>
                                 ))}
                             </TableBody>
                         </Table>
@@ -101,7 +106,7 @@ export default function Dashboard() {
                     open={modalAddPizza}
                     onClose={() => setModalAddPizza(false)}
                 >
-                    <ModalAddNewPizza changeModalAddPizza={changeModalAddPizza} />
+                    <ModalAddNewPizza changeModalAddPizza={changeModalAddPizza} changeUpdatePizzaList={changeUpdatePizzaList} updatePizzaList={updatePizzaList} />
                 </Dialog>}
         </Box>
     )

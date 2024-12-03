@@ -196,7 +196,7 @@ const createNewPizza = async (req, res) => {
 
     const queryInsertPizza = `INSERT INTO pizza (pizza_id, pizza_name, pizza_image_name, pizza_price, pizza_ingredients, 
       pizza_size, pizza_dough, pizza_hot, pizza_meat, pizza_vegetarian, pizza_mix, pizza_rating) 
-      VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 1.23)`
+      VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 0)`
     const insertValues = [ name, imageName, price, ingredients, size, dough, hot, meat, vegetarian, mix ]
     await pool.query(queryInsertPizza, insertValues)
 
@@ -210,6 +210,84 @@ const createNewPizza = async (req, res) => {
   }
 }
 
+const getPizzaDataById = async (req, res) => {
+  try {
+    const { id } = req.body
+
+    const pizzaQuery = `SELECT * FROM pizza WHERE pizza_id = $1`
+    const pizzaValues = [id]
+    const pizzaResult = await pool.query(pizzaQuery, pizzaValues)
+
+    return res.status(200).json({
+      message: pizzaResult.rows[0]
+    })
+  } catch (error) {
+    logger.error(`getPizzaById: ${error}`)
+
+    return res.status(400).json({
+      message: 'getPizzaById error'
+    })
+  }
+}
+
+const changePizzaText = async (req, res) => {
+  try {
+    const {id, name, imageName, price, ingredients, size, dough, hot, meat, vegetarian, mix} = req.body
+    const queryChangePizzaText = `UPDATE pizza SET 
+    pizza_name = $2, pizza_image_name = $3, pizza_price = $4, pizza_ingredients = $5, pizza_size = $6, pizza_dough = $7, 
+    pizza_hot = $8, pizza_meat = $9, pizza_vegetarian = $10, pizza_mix = $11
+    WHERE pizza_id = $1`
+    const insertValues = [ id, name, imageName, price, ingredients, size, dough, hot, meat, vegetarian, mix ]
+    
+    await pool.query(queryChangePizzaText, insertValues)
+
+    return res.status(200).json({ status: true, message: `change text in pizza by id: ${id}` })
+
+  } catch (error) {
+    logger.error(`changePizzaText: ${error}`)
+
+    return res.status(400).json({
+      status: false, message: 'changePizzaText error'
+    })
+  }
+}
+
+const changePizzaTextAndImage = async (req, res) => {
+  try {
+    const {id, name, imageName, price, ingredients, size, dough, hot, meat, vegetarian, mix} = JSON.parse(req.body.data)
+    const imageNameWithoutExtention = imageName.replace(/\.(jpg|png|jpeg)$/gi, '')
+
+    if (!req.files.pizzaImage) {
+      return res.status(400).json({ status: false, message: `changePizzaTextAndImage error` })
+    } 
+
+    const image = req.files.pizzaImage
+    const uploadPath = serverPath + '/images/' + image.name
+
+    image.mv(uploadPath, (err) => {
+      if (err) {
+        return res.status(500).json({ status: false, message: 'changePizzaTextAndImage error' })
+      }
+    })
+
+    const updateQuery = `UPDATE pizza SET 
+    pizza_name = $2, pizza_image_name = $3, pizza_price = $4, pizza_ingredients = $5, pizza_size = $6, pizza_dough = $7, 
+    pizza_hot = $8, pizza_meat = $9, pizza_vegetarian = $10, pizza_mix = $11
+    WHERE pizza_id = $1`
+    const insertValues = [ id, name, imageNameWithoutExtention, price, ingredients, size, dough, hot, meat, vegetarian, mix ]
+    await pool.query(updateQuery, insertValues)
+
+    return res.status(200).json({ status: true, message: `change pizza id: ${id}` })
+
+  } catch (error) {
+    logger.error(`changePizzaTextAndImage: ${error}`)
+
+    return res.status(400).json({
+      status: false, message: 'changePizzaTextAndImage error'
+    })
+  }
+}
+
 module.exports = {
     pizzaList,
     filteredPizzaList,
@@ -218,5 +296,8 @@ module.exports = {
     createPizzaOrder,
     getUserOrders,
     getOrderComposition,
-    createNewPizza
+    createNewPizza,
+    getPizzaDataById,
+    changePizzaText,
+    changePizzaTextAndImage
 }

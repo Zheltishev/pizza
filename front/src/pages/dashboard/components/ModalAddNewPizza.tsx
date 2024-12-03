@@ -1,5 +1,5 @@
 import { Box, Button, Grid2, Stack, TextField, ToggleButton, ToggleButtonGroup, ToggleButtonProps, Typography, styled } from "@mui/material";
-import { IModalAddPizz } from "../../../tsModals/tsModals";
+import { IModalAddPizza } from "../../../tsModals/tsModals";
 import AddIcon from '@mui/icons-material/Add';
 import GrassIcon from '@mui/icons-material/Grass';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
@@ -9,7 +9,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useState } from "react";
 import createNewPizza from "../middleware/createNewPizza";
 
-export default function ModalAddNewPizza(props: IModalAddPizz) {
+export default function ModalAddNewPizza(props: IModalAddPizza) {
     const StyledToggleButton = styled(ToggleButton)<ToggleButtonProps>({
         textTransform: 'none'
     })
@@ -24,7 +24,7 @@ export default function ModalAddNewPizza(props: IModalAddPizz) {
         whiteSpace: 'nowrap',
         width: 1,
       });
-    const { changeModalAddPizza } = props
+    const { changeModalAddPizza, changeUpdatePizzaList, updatePizzaList } = props
     const [newPizzaName, setNewPizzaName] = useState('')
     const [pizzaPrice, setPizzaPrice] = useState<number>(0)
     const [ingredientsList, setIngredientsList] = useState('')
@@ -248,7 +248,8 @@ export default function ModalAddNewPizza(props: IModalAddPizz) {
                             createNewPizza({newPizzaName, pizzaPrice, ingredientsList, doughTypesString, sizesTypeString, hotStatus, vegetarianStatus, meatStatus, mixStatus, imageFile})
                         }
 
-                        // changeModalAddPizza(false)
+                        changeUpdatePizzaList(!updatePizzaList)
+                        changeModalAddPizza(false)
                     }}
                 >
                     добавить

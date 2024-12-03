@@ -148,8 +148,10 @@ export interface IDate {
     orderDate: string
 }
 
-export interface IModalAddPizz {
-    changeModalAddPizza: (value: boolean) => void
+export interface IModalAddPizza {
+    changeModalAddPizza: (value: boolean) => void,
+    changeUpdatePizzaList: (value: boolean) => void,
+    updatePizzaList: boolean
 }
 
 export interface INewPizza {
@@ -162,5 +164,58 @@ export interface INewPizza {
     vegetarianStatus: boolean,
     meatStatus: boolean,
     mixStatus: boolean,
+    imageFile: File
+}
+
+export interface IModalChangePizza {
+    pizzaId: number,
+    openModalChangePizza: (value: boolean) => void,
+    changeUpdatePizzaList: (value: boolean) => void,
+    updatePizzaList: boolean
+}
+
+export interface IDashboardItem {
+    pizza_id: number,
+    pizza_name: string,
+    pizza_image_name: string,
+    pizza_price: number,
+    pizza_ingredients: string,
+    pizza_size: string,
+    pizza_dough: string,
+    pizza_hot: boolean,
+    pizza_meat: boolean,
+    pizza_vegetarian: boolean,
+    pizza_mix: boolean,
+    pizza_rating: number,
+    changeUpdatePizzaList: (value: boolean) => void,
+    updatePizzaList: boolean
+}
+
+export interface IChangePizzaText {
+    pizzaId: number, 
+    pizzaName: string, 
+    currentImageName: string, 
+    pizzaPrice: string, 
+    pizzaIngredients: string, 
+    sizesTypeString: string, 
+    doughTypesString: string, 
+    hotStatus: boolean, 
+    vegetarianStatus: boolean, 
+    meatStatus: boolean, 
+    mixStatus: boolean
+}
+
+export interface IChangePizzaTextAndImage {
+    pizzaId: number, 
+    pizzaName: string, 
+    currentImageName: string, 
+    pizzaPrice: string, 
+    pizzaIngredients: string, 
+    sizesTypeString: string, 
+    doughTypesString: string, 
+    hotStatus: boolean, 
+    vegetarianStatus: boolean, 
+    meatStatus: boolean, 
+    mixStatus: boolean, 
     imageFile: File
 }
