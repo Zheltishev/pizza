@@ -3,7 +3,10 @@ import './App.css';
 import Home from './pages/home/Home';
 import Profile from './pages/profile/components/Profile';
 import RequireAuth from './components/RequireAuth';
-import Dashboard from './pages/dashboard/components/Dashboard';
+import { lazy, Suspense } from 'react';
+import { CircularProgress, Dialog } from '@mui/material';
+
+const Dashboard = lazy(() => import ('./pages/dashboard/components/Dashboard'))
 
 function App() {
   return (
@@ -18,7 +21,13 @@ function App() {
         } />
         <Route path='/dashboard' element={
           <RequireAuth>
-            <Dashboard />
+            <Suspense fallback={
+              <Dialog open>
+                <CircularProgress color="primary" />
+              </Dialog>
+            }>
+              <Dashboard />
+            </Suspense>
           </RequireAuth>
         } />
       </Routes>

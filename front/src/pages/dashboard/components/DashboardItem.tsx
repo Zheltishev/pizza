@@ -60,7 +60,7 @@ export default function DashboardItem({...dashboardItem}: IDashboardItem) {
             }}
           >
               <StyledTableCell component="th" scope="row">
-                  <img src={imgSRC} alt={pizza_name} style={{ width: '30px' }} />
+                  <img loading="lazy" src={imgSRC} alt={pizza_name} style={{ width: '30px' }} />
               </StyledTableCell>
               <StyledTableCell align="right">{pizza_id}</StyledTableCell>
               <StyledTableCell align="right">{pizza_name}</StyledTableCell>
