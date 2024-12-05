@@ -21,16 +21,14 @@ export default async function createNewPizza({...newPizza}: INewPizza) {
     formData.append('data', data)
     formData.append('pizzaImage', imageFile)
 
-    axios.post('http://localhost:8000/create-new-pizza', formData, {
+    const result = axios.post('http://localhost:8000/create-new-pizza', formData, {
         headers: {
             'Authorization': `Bearer ${Cookies.get('token_access')}`
         }
     })
     .then(res => {
-        console.log(res.data.message)
-
-        return res
+        return res.data.status
     })
 
-    return
+    return result
 }

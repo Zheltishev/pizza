@@ -190,7 +190,7 @@ const createNewPizza = async (req, res) => {
 
     image.mv(uploadPath, (err) => {
       if (err) {
-        return res.status(500).json({ message: 'createNewPizza error' })
+        return res.status(500).json({ status: false, message: 'createNewPizza error' })
       }
     })
 
@@ -200,12 +200,12 @@ const createNewPizza = async (req, res) => {
     const insertValues = [ name, imageName, price, ingredients, size, dough, hot, meat, vegetarian, mix ]
     await pool.query(queryInsertPizza, insertValues)
 
-    return res.status(200).json({ message: 'added new pizza' })
+    return res.status(200).json({ status: true, message: 'added new pizza' })
   } catch (error) {
     logger.error(`createNewPizza: ${error}`)
 
     return res.status(400).json({
-      message: 'createNewPizza error'
+      status: false, message: 'createNewPizza error'
     })
   }
 }

@@ -240,16 +240,19 @@ export default function ModalAddNewPizza(props: IModalAddPizza) {
                         doughTypes.length > 0 && sizesType.length > 0 && 
                         pizzaPrice > 0 && imageFile ? false : true
                     }
-                    onClick={() => {
+                    onClick={async () => {
                         if (imageFile) {
                             const doughTypesString = doughTypes.join(' ')
                             const sizesTypeString = sizesType.join(' ')
 
-                            createNewPizza({newPizzaName, pizzaPrice, ingredientsList, doughTypesString, sizesTypeString, hotStatus, vegetarianStatus, meatStatus, mixStatus, imageFile})
+                            const result = await createNewPizza({newPizzaName, pizzaPrice, ingredientsList, doughTypesString, sizesTypeString, hotStatus, vegetarianStatus, meatStatus, mixStatus, imageFile})
+                        
+                            console.log(result)
+                            if (result) {
+                                changeUpdatePizzaList(!updatePizzaList)
+                                changeModalAddPizza(false)
+                            }
                         }
-
-                        changeUpdatePizzaList(!updatePizzaList)
-                        changeModalAddPizza(false)
                     }}
                 >
                     добавить
