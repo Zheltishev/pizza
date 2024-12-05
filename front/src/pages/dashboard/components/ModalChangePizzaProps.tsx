@@ -11,6 +11,9 @@ import ImageIcon from '@mui/icons-material/Image';
 import { useEffect, useState } from "react";
 import changePizzaText from "../middleware/changePizzaText";
 import changePizzaTextAndImage from "../middleware/changePizzaTextAndImage";
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import deletePizza from "../middleware/deletePizza";
 
 export default function ModalChangePizzaProps(props: IModalChangePizza) {
     const StyledToggleButton = styled(ToggleButton)<ToggleButtonProps>({
@@ -41,6 +44,8 @@ export default function ModalChangePizzaProps(props: IModalChangePizza) {
     const [mixStatus, setMixStatus] = useState(false)
     const [currentImageName, setCurrentImageName] = useState('')
     const [imageFile, setImageFile] = useState<File>()
+    const [deleteField, setDeleteField] = useState(false)
+    const [confirmText, setConfirmText] = useState('')
     const imgSRC = `http://localhost:8000/images/${currentImageName}.png`
     
     useEffect(() => {
@@ -332,7 +337,55 @@ export default function ModalChangePizzaProps(props: IModalChangePizza) {
                             >
                                 изменить
                             </Button>
+
+                            <Button
+                                variant="outlined" 
+                                color='error'
+                                startIcon={<DeleteOutlineIcon />}
+                                onClick={() => setDeleteField(true)}
+                            >
+                                Удалить
+                            </Button>
                         </Box>
+
+                        {deleteField && 
+                            <Box sx={{ 
+                                display: 'flex', 
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                gap: '10px' 
+                            }}>
+                                <Typography 
+                                    variant="subtitle2"
+                                    color="error"
+                                >
+                                    Подтвердите действие
+                                </Typography>
+                                <TextField 
+                                    size="small"
+                                    color="error"
+                                    placeholder="введите название пиццы"
+                                    autoComplete="off"
+                                    onChange={(e) => setConfirmText(e.currentTarget.value)}
+                                />
+                                <Button
+                                    variant="outlined" 
+                                    color='error'
+                                    disabled={ pizzaName === confirmText ? false : true}
+                                    startIcon={<DeleteForeverIcon />}
+                                    onClick={async () => {
+                                        const result = await deletePizza(pizzaId)
+
+                                        if (result) {
+                                            changeUpdatePizzaList(!updatePizzaList)
+                                            openModalChangePizza(false)
+                                        }
+                                    }}
+                                >
+                                    Удалить
+                                </Button>
+                            </Box>
+                        }
                     </>
                 }
             </Grid2>

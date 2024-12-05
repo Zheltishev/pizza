@@ -71,6 +71,20 @@ app.use('/change-pizza-text-and-image', async (req, res, next) => {
   }
 })
 
+app.use('/delete-pizza', async (req, res, next) => {
+  let token = req.headers.authorization
+
+  if (token && await tokenExistInDB(token, 'token_access') && tokenInfo(token).expTime) {
+    const queryUserRole = `SELECT user_role FROM users WHERE user_id = $1`
+    const idUser = [ tokenInfo(token).userId ]
+    const userRole = await pool.query(queryUserRole, idUser)
+
+    userRole.rows[0].user_role === 'admin' ? next() : res.status(401).json({ message: `create new pizza middleware token check error` })
+  } else {
+    return res.status(401).json({ message: `create new pizza middleware token check error` })
+  }
+})
+
 app.post('/create-new-user', auth.createNewUser)
 app.post('/check-email', auth.checkEmail)
 app.post('/login-user', auth.login)
@@ -87,3 +101,4 @@ app.post('/create-new-pizza', pizza.createNewPizza)
 app.post('/get-pizza-name', pizza.getPizzaDataById)
 app.post('/change-pizza-text', pizza.changePizzaText)
 app.post('/change-pizza-text-and-image', pizza.changePizzaTextAndImage)
+app.delete('/delete-pizza', pizza.deletePizza)

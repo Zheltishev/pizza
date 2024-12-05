@@ -288,6 +288,26 @@ const changePizzaTextAndImage = async (req, res) => {
   }
 }
 
+const deletePizza = async (req, res) => {
+  try {
+    const { id } = req.body
+
+    const deleteQuery = `DELETE FROM pizza WHERE pizza_id = $1`
+    const insertValues = [ id ]
+
+    await pool.query(deleteQuery, insertValues)
+
+    return res.status(200).json({ status: true, message: `pizza id ${id} deleted` })
+  } catch (error) {
+    logger.error(`deletePizza: ${error}`)
+
+    return res.status(400).json({
+      status: false,
+      message: 'deletePizza error'
+    })
+  }
+}
+
 module.exports = {
     pizzaList,
     filteredPizzaList,
@@ -299,5 +319,6 @@ module.exports = {
     createNewPizza,
     getPizzaDataById,
     changePizzaText,
-    changePizzaTextAndImage
+    changePizzaTextAndImage,
+    deletePizza
 }

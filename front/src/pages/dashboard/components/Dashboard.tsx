@@ -72,13 +72,28 @@ export default function Dashboard() {
                  }}>
                     <h1>Dashboard</h1>
 
-                    <Grid2 container style={{ justifyContent: 'space-between', paddingBlock: '1rem' }}>
-                        <Box>
+                    <Grid2 
+                        container 
+                        style={{ 
+                            justifyContent: 'space-between', 
+                            paddingBlock: '1rem',
+                            gap: '10px'
+                        }}
+                    >
+                        <Box sx={{width: {
+                                md: 'auto',
+                                xs: '100%'
+                            }}}>
                             <TextField 
                                 size="small"
                                 placeholder="найти"
                                 value={searchValue}
                                 inputRef={inputSeach}
+                                sx={{
+                                    width: {
+                                        xs: '100%'
+                                    }
+                                }}
                                 slotProps={{
                                     input: {
                                       endAdornment: (
