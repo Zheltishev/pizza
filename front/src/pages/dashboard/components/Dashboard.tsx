@@ -1,13 +1,14 @@
-import { Box, Button, Dialog, Grid2, Paper, styled, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Box, Button, Dialog, Grid2, InputAdornment, Paper, styled, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
 import Header from "../../../components/header/Header";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { IPizza } from "../../../tsModals/tsModals";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { changePizzaList } from "../../../redux/pizzaListSlice";
 import DashboardItem from "./DashboardItem";
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import ModalAddNewPizza from "./ModalAddNewPizza";
+import ClearIcon from '@mui/icons-material/Clear';
 
 export default function Dashboard() {
     const dispatch = useDispatch()
@@ -23,6 +24,9 @@ export default function Dashboard() {
       }));
     const [modalAddPizza, setModalAddPizza] = useState(false)
     const [updatePizzaList, setUpdatePizzaList] = useState(false)
+    const [searchValue, setSearchValue] = useState('')
+    const [throttleValue, setThrottleValue] = useState('')
+    const inputSeach = useRef<HTMLInputElement>(null)
 
     const changeModalAddPizza = (value: boolean) => {
         setModalAddPizza(value)
@@ -39,6 +43,16 @@ export default function Dashboard() {
                 dispatch(changePizzaList(res))
             })
     }, [dispatch, updatePizzaList])
+
+    useEffect(() => {
+        const throttleTimer = setTimeout(() => {
+            setThrottleValue(searchValue)
+        }, 500)
+
+        return () => {
+            clearTimeout(throttleTimer)
+        }
+    }, [searchValue])
 
     return (
         <Box>
@@ -58,7 +72,36 @@ export default function Dashboard() {
                  }}>
                     <h1>Dashboard</h1>
 
-                    <Grid2 container style={{ justifyContent: 'end', paddingBlock: '1rem' }}>
+                    <Grid2 container style={{ justifyContent: 'space-between', paddingBlock: '1rem' }}>
+                        <Box>
+                            <TextField 
+                                size="small"
+                                placeholder="найти"
+                                value={searchValue}
+                                inputRef={inputSeach}
+                                slotProps={{
+                                    input: {
+                                      endAdornment: (
+                                        <InputAdornment position="end">
+                                          <ClearIcon 
+                                            sx={{ 
+                                                cursor: 'pointer',
+                                                '&:hover': {
+                                                    color: '#f3b244'
+                                                }
+                                            }}
+                                            onClick={() => {
+                                                setSearchValue('')
+                                                if (inputSeach.current) inputSeach.current.focus()
+                                            }}
+                                          />
+                                        </InputAdornment>
+                                      ),
+                                    },
+                                  }}
+                                onChange={(e) => setSearchValue(e.currentTarget.value)}
+                            />
+                        </Box>
                         <Box>
                             <Button
                                 variant="outlined" 
@@ -90,9 +133,13 @@ export default function Dashboard() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {pizzaList.map((pizza: IPizza) => (
-                                    <DashboardItem key={pizza.pizza_id} changeUpdatePizzaList={changeUpdatePizzaList} updatePizzaList={updatePizzaList} {...pizza}/>
-                                ))}
+                                {pizzaList
+                                    .filter((pizza: IPizza) => throttleValue 
+                                        ? pizza.pizza_name.toLowerCase().includes(throttleValue) || pizza.pizza_ingredients.toLowerCase().includes(throttleValue)
+                                        : pizza )
+                                    .map((pizza: IPizza) => (
+                                        <DashboardItem key={pizza.pizza_id} changeUpdatePizzaList={changeUpdatePizzaList} updatePizzaList={updatePizzaList} {...pizza}/>
+                                    ))}
                             </TableBody>
                         </Table>
                     </TableContainer>
