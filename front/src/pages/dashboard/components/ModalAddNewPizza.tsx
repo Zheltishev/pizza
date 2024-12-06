@@ -8,8 +8,11 @@ import JoinLeftIcon from '@mui/icons-material/JoinLeft';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useState } from "react";
 import createNewPizza from "../middleware/createNewPizza";
+import { useDispatch } from "react-redux";
+import { alertChangeMessage, alertChangeModalOpen, alertChangeStatus } from "../../../redux/alertSlice";
 
 export default function ModalAddNewPizza(props: IModalAddPizza) {
+    const dispatch = useDispatch()
     const StyledToggleButton = styled(ToggleButton)<ToggleButtonProps>({
         textTransform: 'none'
     })
@@ -247,9 +250,16 @@ export default function ModalAddNewPizza(props: IModalAddPizza) {
 
                             const result = await createNewPizza({newPizzaName, pizzaPrice, ingredientsList, doughTypesString, sizesTypeString, hotStatus, vegetarianStatus, meatStatus, mixStatus, imageFile})
                         
-                            if (result) {
+                            if (result.status) {
                                 changeUpdatePizzaList(!updatePizzaList)
                                 changeModalAddPizza(false)
+                                dispatch(alertChangeMessage(result.message))
+                                dispatch(alertChangeStatus(true))
+                                dispatch(alertChangeModalOpen(true))
+                            } else {
+                                dispatch(alertChangeMessage(result.message))
+                                dispatch(alertChangeStatus(false))
+                                dispatch(alertChangeModalOpen(true))
                             }
                         }
                     }}

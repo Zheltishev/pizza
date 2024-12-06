@@ -14,8 +14,11 @@ import changePizzaTextAndImage from "../middleware/changePizzaTextAndImage";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import deletePizza from "../middleware/deletePizza";
+import { useDispatch } from "react-redux";
+import { alertChangeMessage, alertChangeModalOpen, alertChangeStatus } from "../../../redux/alertSlice";
 
 export default function ModalChangePizzaProps(props: IModalChangePizza) {
+    const dispatch = useDispatch()
     const StyledToggleButton = styled(ToggleButton)<ToggleButtonProps>({
         textTransform: 'none'
     })
@@ -296,9 +299,9 @@ export default function ModalChangePizzaProps(props: IModalChangePizza) {
                                 onClick={async () => {
                                     const doughTypesString = doughTypes.join(' ')
                                     const sizesTypeString = sizesType.join(' ')
-                                    const updateResult = () => {
+                                    const updateResult = async () => {
                                         if (imageFile) {
-                                            return changePizzaTextAndImage({
+                                            return await changePizzaTextAndImage({
                                                 pizzaId, 
                                                 pizzaName, 
                                                 currentImageName, 
@@ -313,7 +316,7 @@ export default function ModalChangePizzaProps(props: IModalChangePizza) {
                                                 imageFile
                                             })
                                         } else {
-                                            return changePizzaText({
+                                            return await changePizzaText({
                                                 pizzaId, 
                                                 pizzaName, 
                                                 currentImageName, 
@@ -328,10 +331,19 @@ export default function ModalChangePizzaProps(props: IModalChangePizza) {
                                             })
                                         }
                                     }
+
+                                    const result = await updateResult()
                                     
-                                    if (await updateResult()) {
+                                    if (result) {
                                         changeUpdatePizzaList(!updatePizzaList)
                                         openModalChangePizza(false)
+                                        dispatch(alertChangeMessage(result.message))
+                                        dispatch(alertChangeStatus(true))
+                                        dispatch(alertChangeModalOpen(true))
+                                    } else {
+                                        dispatch(alertChangeMessage(result.message))
+                                        dispatch(alertChangeStatus(false))
+                                        dispatch(alertChangeModalOpen(true))
                                     }
                                 }}
                             >
@@ -379,6 +391,13 @@ export default function ModalChangePizzaProps(props: IModalChangePizza) {
                                         if (result) {
                                             changeUpdatePizzaList(!updatePizzaList)
                                             openModalChangePizza(false)
+                                            dispatch(alertChangeMessage(result.message))
+                                            dispatch(alertChangeStatus(true))
+                                            dispatch(alertChangeModalOpen(true))
+                                        } else {
+                                            dispatch(alertChangeMessage(result.message))
+                                            dispatch(alertChangeStatus(false))
+                                            dispatch(alertChangeModalOpen(true))
                                         }
                                     }}
                                 >

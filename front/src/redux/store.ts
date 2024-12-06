@@ -2,12 +2,13 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import userDataSlice from "./userDataSlice";
 import pizzaListSlice from "./pizzaListSlice";
 import basketListSlice from "./basketListSlice";
-
+import alertSlice from "./alertSlice";
 
 const rootReducer = combineReducers({
     userDataSlice,
     pizzaListSlice,
-    basketListSlice
+    basketListSlice,
+    alertSlice
 })
 
 export const store = configureStore({

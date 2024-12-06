@@ -27,7 +27,7 @@ export default async function createNewPizza({...newPizza}: INewPizza) {
         }
     })
     .then(res => {
-        return res.data.status
+        return res.data
     })
 
     return result

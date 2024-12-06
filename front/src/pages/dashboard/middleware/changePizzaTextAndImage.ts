@@ -40,7 +40,7 @@ export default async function changePizzaTextAndImage({...props}: IChangePizzaTe
             'Authorization': `Bearer ${Cookies.get('token_access')}`
         }
     })
-    .then(res => res.data.status)
+    .then(res => res.data)
 
     return result
 }

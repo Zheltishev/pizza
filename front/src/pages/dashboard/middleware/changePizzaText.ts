@@ -35,7 +35,7 @@ export default async function changePizzaText({...props}: IChangePizzaText) {
                 mix: mixStatus})
     })
     .then(res => res.json())
-    .then(res => res.status)
+    .then(res => res)
 
     return result
 }

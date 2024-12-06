@@ -277,7 +277,7 @@ const changePizzaTextAndImage = async (req, res) => {
     const insertValues = [ id, name, imageNameWithoutExtention, price, ingredients, size, dough, hot, meat, vegetarian, mix ]
     await pool.query(updateQuery, insertValues)
 
-    return res.status(200).json({ status: true, message: `change pizza id: ${id}` })
+    return res.status(200).json({ status: true, message: `changePizzaTextAndImage id: ${id}` })
 
   } catch (error) {
     logger.error(`changePizzaTextAndImage: ${error}`)

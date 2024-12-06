@@ -10,7 +10,7 @@ export default async function deletePizza(id: number) {
         body: JSON.stringify({id: id})
     })
     .then(res => res.json())
-    .then(res => res.status)
+    .then(res => res)
 
     return result
 }

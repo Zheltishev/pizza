@@ -1,6 +1,6 @@
 import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
 import LoginIcon from '@mui/icons-material/Login';
-import { Avatar, Box, Dialog, IconButton, ListItemIcon, Menu, MenuItem, Tooltip } from '@mui/material';
+import { Alert, Avatar, Box, Collapse, Dialog, IconButton, ListItemIcon, Menu, MenuItem, Tooltip } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { amber } from '@mui/material/colors';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,10 +13,13 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import AuthForm from '../../pages/home/modals/AuthForm';
 import { Link } from 'react-router-dom';
 import { clearBasket } from '../../redux/basketListSlice';
+import { alertChangeMessage, alertChangeModalOpen, alertChangeStatus } from '../../redux/alertSlice';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function Header() {
     const dispatch = useDispatch()
     const { userAuthorize, userName, userRole } = useSelector((state: RootState) => state.rootReducer.userDataSlice)
+    const { alertModalOpen, alertStatus, alertMessage } = useSelector((state: RootState) => state.rootReducer.alertSlice)
     const [authFormOpen, setAuthFormOpen] = useState(false)
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const accountMenuState = Boolean(anchorEl);
@@ -47,6 +50,14 @@ export default function Header() {
     
         checkAuth()
     }, [dispatch, userAuthorize])
+
+    useEffect(() => {
+        setTimeout(() => {
+            dispatch(alertChangeMessage(''))
+            dispatch(alertChangeStatus(false))
+            dispatch(alertChangeModalOpen(false))
+        }, 5000)
+    }, [alertModalOpen])
 
     return (
         <Stack 
@@ -147,15 +158,34 @@ export default function Header() {
                 }
             </Menu>
 
-            <>
-                {authFormOpen && 
+            {authFormOpen && 
                 <Dialog
                     open={authFormOpen}
                     onClose={() => setAuthFormOpen(false)}
                 >
                     <AuthForm closeAuthFrom = { closeAuthFrom } />
-                </Dialog>}
-            </>
+                </Dialog>
+            }
+
+            {alertModalOpen && 
+                <Alert
+                    severity={alertStatus ? 'success' : 'error'}
+                    sx={{ position: 'absolute', right: '1rem' }}
+                    action={
+                        <IconButton
+                          aria-label="close"
+                          color={alertStatus ? 'success' : 'error'}
+                          size="small"
+                          onClick={() => dispatch(alertChangeModalOpen(false))}
+                        >
+                          <CloseIcon fontSize="inherit" />
+                        </IconButton>
+                    }
+                    >
+                        {alertMessage}
+                </Alert>
+            }
+
         </Stack>
     )
 }
