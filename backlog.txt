@@ -1,3 +1,2 @@
-page dashboard make redirect for users with user role
-react router wrong works of navigation from pages second level in header menu
 change pages titles
+change type for time

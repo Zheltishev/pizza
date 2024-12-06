@@ -109,7 +109,7 @@ export default function Header() {
                 {userAuthorize 
                     ?
                     <Box>
-                        <Link to="profile" style={{ textDecoration: 'none' }}>
+                        <Link to="/profile" style={{ textDecoration: 'none' }}>
                             <MenuItem sx={{
                                 color: 'white'
                             }}>
@@ -120,7 +120,7 @@ export default function Header() {
                             </MenuItem>
                         </Link>
                         {userRole === 'admin' ? 
-                            <Link to="dashboard" style={{ textDecoration: 'none' }}>
+                            <Link to="/dashboard" style={{ textDecoration: 'none' }}>
                                 <MenuItem sx={{
                                     color: 'white'
                                 }}>
