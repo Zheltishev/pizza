@@ -247,7 +247,6 @@ export default function ModalAddNewPizza(props: IModalAddPizza) {
 
                             const result = await createNewPizza({newPizzaName, pizzaPrice, ingredientsList, doughTypesString, sizesTypeString, hotStatus, vegetarianStatus, meatStatus, mixStatus, imageFile})
                         
-                            console.log(result)
                             if (result) {
                                 changeUpdatePizzaList(!updatePizzaList)
                                 changeModalAddPizza(false)

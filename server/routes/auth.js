@@ -144,10 +144,25 @@ const updateToken = async (req, res) => {
   }
 }
 
+const checkAdminToken = async (req, res, next) => {
+  let token = req.headers.authorization
+
+  if (token && await tokenExistInDB(token, 'token_access') && tokenInfo(token).expTime) {
+    const queryUserRole = `SELECT user_role FROM users WHERE user_id = $1`
+    const idUser = [ tokenInfo(token).userId ]
+    const userRole = await pool.query(queryUserRole, idUser)
+
+    userRole.rows[0].user_role === 'admin' ? next() : res.status(401).json({ message: `create new pizza middleware token check error` })
+  } else {
+    return res.status(401).json({ message: `create new pizza middleware token check error` })
+  }
+}
+
 module.exports = {
     createNewUser,
     checkEmail,
     login,
     checkToken,
-    updateToken
+    updateToken,
+    checkAdminToken
 }
