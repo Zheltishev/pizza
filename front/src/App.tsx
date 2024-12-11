@@ -5,6 +5,7 @@ import Profile from './pages/profile/components/Profile';
 import RequireAuth from './components/RequireAuth';
 import { lazy, Suspense } from 'react';
 import { CircularProgress, Dialog } from '@mui/material';
+import Orders from './pages/orders/components/Orders';
 
 const Dashboard = lazy(() => import ('./pages/dashboard/components/Dashboard'))
 
@@ -27,6 +28,17 @@ function App() {
               </Dialog>
             }>
               <Dashboard />
+            </Suspense>
+          </RequireAuth>
+        } />
+        <Route path='/orders' element={
+          <RequireAuth>
+            <Suspense fallback={
+              <Dialog open>
+                <CircularProgress color="primary" />
+              </Dialog>
+            }>
+              <Orders />
             </Suspense>
           </RequireAuth>
         } />

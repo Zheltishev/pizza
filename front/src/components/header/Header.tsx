@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import { clearBasket } from '../../redux/basketListSlice';
 import { alertChangeMessage, alertChangeModalOpen, alertChangeStatus } from '../../redux/alertSlice';
 import CloseIcon from '@mui/icons-material/Close';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 
 export default function Header() {
     const dispatch = useDispatch()
@@ -120,17 +121,29 @@ export default function Header() {
                             </MenuItem>
                         </Link>
                         {userRole === 'admin' ? 
-                            <Link to="/dashboard" style={{ textDecoration: 'none' }}>
+                            <>
+                                <Link to="/dashboard" style={{ textDecoration: 'none' }}>
+                                    <MenuItem sx={{
+                                        color: 'white'
+                                    }}>
+                                        <ListItemIcon>
+                                            <Dashboard fontSize="small" />
+                                        </ListItemIcon>
+                                        Dashboard
+                                    </MenuItem>
+                                </Link>
+                                <Link to="/orders" style={{ textDecoration: 'none' }}>
                                 <MenuItem sx={{
                                     color: 'white'
                                 }}>
                                     <ListItemIcon>
-                                        <Dashboard fontSize="small" />
+                                        <AssignmentIcon fontSize="small" />
                                     </ListItemIcon>
-                                    Dashboard
+                                    Orders
                                 </MenuItem>
-                            </Link> :
-                            null
+                                </Link>
+                            </> 
+                            : null
                         }
                         <MenuItem onClick={() => {
                             document.cookie = "token_access=''; expires=0";

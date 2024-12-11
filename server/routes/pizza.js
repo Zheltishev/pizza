@@ -308,6 +308,21 @@ const deletePizza = async (req, res) => {
   }
 }
 
+const getAllOrders = async (req, res) => {
+  try {
+    const ordersQuery = `SELECT * FROM orders ORDER BY order_id DESC`
+    const ordersResult = await pool.query(ordersQuery)
+
+    return res.status(200).json( ordersResult.rows )
+  } catch (error) {
+    logger.error(`getAllOrders: ${error}`)
+
+    return res.status(400).json({
+      message: []
+    })
+  }
+}
+
 module.exports = {
     pizzaList,
     filteredPizzaList,
@@ -320,5 +335,6 @@ module.exports = {
     getPizzaDataById,
     changePizzaText,
     changePizzaTextAndImage,
-    deletePizza
+    deletePizza,
+    getAllOrders
 }
